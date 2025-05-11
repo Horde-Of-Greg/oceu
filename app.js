@@ -1,4 +1,5 @@
 import express from "express";
+import express from "express";
 import path from "path";
 import { createServer } from "https";
 import { readFileSync } from "fs";
@@ -10,7 +11,6 @@ import { parse_duration } from "./public/util.js";
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(app.router);
 app.use(express.json());
 app.use(express.static("public"));
 
