@@ -8,7 +8,7 @@ import { generate_table } from "./public/gen_table.js";
 import { parse_duration } from "./public/util.js";
 
 const app = express();
-const port = process.env.PORT || 443;
+const port = process.env.PORT || 3000;
 
 app.use(app.router);
 app.use(express.json());
