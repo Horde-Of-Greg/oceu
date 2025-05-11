@@ -19,7 +19,7 @@ app.post("/api/parse_input", (req, res) => {
 });
 
 app.post("/api/overclock", (req, res) => {
-  const [recipe, output] = run_recipe(req.body, {});
+  const [recipe, output] = run_recipe(req.body);
   res.json(output);
 });
 
