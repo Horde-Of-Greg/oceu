@@ -38,7 +38,6 @@ function calculate_overclock(recipe, voltage) {
     chance_bonus: null,
   };
   // Null out the fields we don't use
-
   let base_eu = recipe.base_eu;
   const is_ce = recipe.flags.includes("--ce");
 
@@ -178,11 +177,7 @@ function calculate_ebf_overclock(recipe, voltage) {
   return output;
 }
 
-export function run_recipe(recipe, options) {
-  if (options.pre_flags) {
-    recipe.flags = recipe.flags.concat(options.pre_flags);
-  }
-
+export function run_recipe(recipe) {
   const eu_tier = get_voltage_tier(
     recipe.base_eu,
     recipe.flags.includes("--ce"),

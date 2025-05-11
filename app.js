@@ -1,5 +1,4 @@
 import express from "express";
-import express from "express";
 import path from "path";
 import { createServer } from "https";
 import { readFileSync } from "fs";
@@ -7,6 +6,7 @@ import { parse_input } from "./public/parsing.js";
 import { run_recipe } from "./public/oceu.js";
 import { generate_table } from "./public/gen_table.js";
 import { parse_duration } from "./public/util.js";
+import { generate_report } from "./public/report.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -25,6 +25,10 @@ app.post("/api/overclock", (req, res) => {
 
 app.post("/api/gen_table", (req, res) => {
   res.json(generate_table(req.body.recipe, req.body.flags));
+});
+
+app.post("/api/gen_report", (req, res) => {
+  res.json(generate_report(req.body));
 });
 
 // Start the server
