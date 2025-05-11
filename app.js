@@ -15,8 +15,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 app.post("/api/parse_input", (req, res) => {
-  console.log(req.body, req.data);
-  res.json(parse_input(req.body));
+  res.json(parse_input(req.body.input));
 });
 
 app.post("/api/overclock", (req, res) => {
