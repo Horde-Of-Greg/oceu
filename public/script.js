@@ -178,7 +178,7 @@ document.getElementById("bulk_add_button").addEventListener("click", () => {
 document.getElementById("gen_report_button").addEventListener("click", () => {
   const report_table = document.querySelector("#report_table tbody");
   const report_headers = document.querySelector("#report_table thead tr");
-  const report = generate_report(recipe_storage);
+  const report = generate_report(recipe_storage)[2];
 
   report_table.innerHTML = "";
   report_headers.innerHTML = "";
