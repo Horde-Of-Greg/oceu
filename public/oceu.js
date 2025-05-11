@@ -43,7 +43,7 @@ function calculate_overclock(recipe, voltage) {
   const is_ce = recipe.flags.includes("--ce");
 
   if (recipe.oc_type.includes("parallel")) {
-    parallel = Math.min(
+    const parallel = Math.min(
       recipe.base_parallel,
       Math.floor((recipe.amperage * get_eu_t(voltage)) / recipe.base_eu),
     );

@@ -11,7 +11,7 @@ const app = express();
 const privateKey = readFileSync("localhost-key.pem", "utf8");
 const certificate = readFileSync("localhost.pem", "utf8");
 
-const passphrase = "gaurav";
+const passphrase = "bruh";
 const credentials = { key: privateKey, passphrase, cert: certificate };
 
 const httpsServer = createServer(credentials, app);
@@ -24,7 +24,7 @@ function ensureSecure(req, res, next) {
 }
 
 app.use(ensureSecure);
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 443;
 
 app.use(express.json());
 app.use(express.static("public"));
