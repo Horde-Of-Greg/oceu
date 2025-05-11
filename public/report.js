@@ -3,7 +3,6 @@ import { run_recipe } from "./oceu.js";
 
 export function generate_report(recipes) {
   let output = {};
-  let recipes = [];
   let results = [];
   const production_rates = [];
 
@@ -12,7 +11,6 @@ export function generate_report(recipes) {
       const arr = run_recipe(element);
       const recipe = arr[0],
         output = arr[1];
-      recipes.push(recipe);
       results.push(output);
 
       const rates_flag = parse_flag(recipe.flags, "--rates");
@@ -41,5 +39,5 @@ export function generate_report(recipes) {
   const ratios = get_ratios(production_rates);
   output.ratios = ratios.join(":");
 
-  return [recipes, results, output];
+  return [results, output];
 }
