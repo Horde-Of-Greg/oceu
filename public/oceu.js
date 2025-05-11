@@ -116,7 +116,7 @@ function calculate_ebf_overclock(recipe, voltage) {
     return calculate_overclock(recipe, voltage);
   }
 
-  base_eu = recipe.base_eu;
+  let base_eu = recipe.base_eu;
 
   if (recipe.oc_type.includes("parallel")) {
     parallel = Math.floor(
@@ -134,20 +134,20 @@ function calculate_ebf_overclock(recipe, voltage) {
     // Apply a 95% discount every 900K in coil temp
   }
 
-  eu_tier = get_voltage_tier(
+  let eu_tier = get_voltage_tier(
     base_eu * ebf_eu_discount(recipe.base_recipe_heat, recipe.base_coil_heat),
     false,
   );
 
-  recipe_voltage = get_voltage_tier(
+  const recipe_voltage = get_voltage_tier(
     get_eu_t(voltage) * recipe.amperage - 1,
     false,
   );
 
-  overclock_tiers = recipe_voltage - eu_tier;
+  const overclock_tiers = recipe_voltage - eu_tier;
 
-  effective_heat = recipe.base_coil_heat + (recipe_voltage - 2) * 100;
-  ebf_perfect_overclocks = Math.floor(
+  const effective_heat = recipe.base_coil_heat + (recipe_voltage - 2) * 100;
+  const ebf_perfect_overclocks = Math.floor(
     (effective_heat - recipe.base_recipe_heat) / 1800,
   );
 
@@ -157,12 +157,12 @@ function calculate_ebf_overclock(recipe, voltage) {
   );
   // Recalculate the voltage tier we are running considering the coil heat increase from oc
 
-  effective_eu =
+  const effective_eu =
     base_eu *
     ebf_eu_discount(recipe.base_recipe_heat, effective_heat) *
     Math.pow(4, overclock_tiers);
 
-  effective_time =
+  const effective_time =
     recipe.base_duration /
     Math.pow(4, Math.min(overclock_tiers, ebf_perfect_overclocks)) /
     Math.pow(2, Math.max(0, overclock_tiers - ebf_perfect_overclocks));
@@ -237,11 +237,11 @@ export function run_recipe(recipe, options) {
             "Nomifactory CE does not have UEV+ Voltage, voltages in Nomifactory caps to MAX",
           );
         }
-        for (index = eu_tier; index <= 14; index++) {
+        for (let index = eu_tier; index <= 14; index++) {
           output.push(calculate_ebf_overclock(recipe, index));
         }
       } else {
-        for (index = eu_tier; index <= 9; index++) {
+        for (let index = eu_tier; index <= 9; index++) {
           output.push(calculate_ebf_overclock(recipe, index));
         }
       }

@@ -16,6 +16,21 @@ export const voltage_tiers = [
   { tier: 14, name: "MAX", eu_threshold: 2147483648 },
 ];
 
+export function calculate_rates(output, rate_amount) {
+  const amount = rate_amount || 1;
+  output.amount = amount;
+
+  let rate = (1 / (output.time / 20)) * amount;
+  if (output.parallel) {
+    rate = rate * output.parallel;
+  }
+
+  if (rate < 0.01) {
+    return (rate * 60).toFixed(2).toString() + "/min";
+  } else {
+    return rate.toFixed(2).toString() + "/s";
+  }
+}
 export function get_tier_name(voltage) {
   const tier = voltage_tiers.find((t) => t.tier === voltage);
   return tier ? tier.name : null;

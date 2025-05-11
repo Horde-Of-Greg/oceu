@@ -1,4 +1,4 @@
-import { parse_flag, get_tier_name } from "./util.js";
+import { parse_flag, get_tier_name, calculate_rates } from "./util.js";
 
 export function generate_table(outputs, flags) {
   // Initialize lengths for each column
@@ -29,19 +29,7 @@ export function generate_table(outputs, flags) {
 
     row.amount = 1;
     if (rates_flag) {
-      const amount = rates_flag ? parseInt(rates_flag, 10) : 1;
-      row.amount = amount;
-
-      let rate = (1 / (row.time / 20)) * amount;
-      if (needs_parallel) {
-        rate = rate * row.parallel;
-      }
-
-      if (rate < 0.01) {
-        row.rates = (rate * 60).toFixed(2).toString() + "/min";
-      } else {
-        row.rates = rate.toFixed(2).toString() + "/s";
-      }
+      recipe.rates = calculate_rates(row, rates_flag);
       rates_length = Math.max(row.rates.toString().length, rates_length);
     }
   });
