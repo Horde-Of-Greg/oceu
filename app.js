@@ -31,6 +31,11 @@ app.post("/api/gen_report", (req, res) => {
   res.json(generate_report(req.body));
 });
 
+app.post("/api/t_oceu", (req, res) => {
+  const [recipe, output] = run_recipe(parse_input(req.body.input));
+  res.json({ recipe: recipe, output: generate_report(output) });
+});
+
 // Start the server
 app.listen(port, () => {
   console.log(`API running on http://localhost:${port}`);
