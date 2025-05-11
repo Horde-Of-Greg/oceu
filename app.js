@@ -33,7 +33,7 @@ app.post("/api/gen_report", (req, res) => {
 
 app.post("/api/t_oceu", (req, res) => {
   const [recipe, output] = run_recipe(parse_input(req.body.input));
-  res.json({ recipe: recipe, output: generate_report(output) });
+  res.json({ recipe: recipe, output: generate_table(output, recipe.flags) });
 });
 
 // Start the server
