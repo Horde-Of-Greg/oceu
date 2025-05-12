@@ -131,17 +131,48 @@ export function update_result() {
       generate_table_web(output, recipe);
     }
   } catch (error) {
-    const table = document.querySelector("table");
+    const table = document.querySelector("#output_table tbody");
+    const header = document.querySelector("#output_table thead tr");
+
     table.innerHTML = "";
+    header.innerHTML = "";
+
+    const tr = document.createElement("tr");
     const td = document.createElement("td");
     td.textContent = `${error}`;
-    table.appendChild(td);
+    tr.appendChild(td);
+    table.appendChild(tr);
   }
 }
 
 export function load_recipe_to_view(recipes) {
-  const table = document.getElementById("recipe_table");
+  const table = document.querySelector("#recipe_table tbody");
+  const header = document.querySelector("#recipe_table thead tr");
+
   table.innerHTML = "";
+  header.innerHTML = "";
+
+  [
+    "EU Cost",
+    "Duration",
+    recipes.some((item) => {
+      item.base_chance;
+    })
+      ? "Chance"
+      : "",
+
+    recipes.some((item) => {
+      item.base_parallel;
+    })
+      ? "Parallel"
+      : "",
+  ].forEach((item) => {
+    const th = document.createElement("th");
+    if (item) {
+      th.textContent = item;
+      header.appendChild(th);
+    }
+  });
 
   recipes.forEach((item) => {
     if (item.base_eu && item.base_duration) {
@@ -154,9 +185,11 @@ export function load_recipe_to_view(recipes) {
       ];
 
       cells.forEach((cell_data) => {
-        const td = document.createElement("td");
-        td.textContent = cell_data;
-        row.appendChild(td);
+        if (cell_data) {
+          const td = document.createElement("td");
+          td.textContent = cell_data;
+          row.appendChild(td);
+        }
       });
       table.appendChild(row);
     }
@@ -198,12 +231,14 @@ document.getElementById("gen_report_button").addEventListener("click", () => {
   production_speed = document.createElement("td");
   bottleneck = document.createElement("td");
   ratios = document.createElement("td");
+  const row = document.createElement("tr");
 
   production_speed.textContent = report.production_speed;
   bottleneck.textContent = report.bottleneck;
   ratios.textContent = report.ratios;
 
-  report_table.appendChild(production_speed);
-  report_table.appendChild(bottleneck);
-  report_table.appendChild(ratios);
+  row.appendChild(production_speed);
+  row.appendChild(bottleneck);
+  row.appendChild(ratios);
+  report_table.appendChild(row);
 });
