@@ -29,7 +29,7 @@ export function generate_table(outputs, flags) {
 
     row.amount = 1;
     if (rates_flag) {
-      recipe.rates = calculate_rates(row, rates_flag);
+      row.rates = calculate_rates(row, rates_flag);
       rates_length = Math.max(row.rates.toString().length, rates_length);
     }
   });
