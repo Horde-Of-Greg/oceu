@@ -10,26 +10,6 @@ import {
   get_ratios,
   get_downclocks,
 } from "./util.js";
-/* 
-Basically a rewrite of %t oceu with support for parallel hatches. Grace yourself to my (not as bad) code.
-Harass smallming._ if you encounter any bugs / want to extend the functionally of this,
-%t oldceu contains the old version of %t oceu before this revamp.
-
-All time will be in ticks.
-
-Types:
-recipe: {
-    base_eu: 
-    base_duration: 
-    base_chance: 
-    base_chance_bonus: 
-    base_recipe_heat: 
-    base_coil_heat: 
-    flags:
-    oc_type: 
-};
-
-*/
 
 function calculate_overclock(recipe, voltage) {
   const output = {
@@ -103,14 +83,14 @@ function calculate_overclock(recipe, voltage) {
 }
 
 function calculate_ebf_overclock(recipe, voltage) {
+  // Null out the fields we don't use
   const output = {
     parallel: null,
     chance: null,
     chance_bonus: null,
   };
-  // Null out the fields we don't use
 
-  // EBF behaviour in CE is identical to single blocks
+  // EBF behaviour in CE is identical to singleblocks
   if (recipe.flags.includes("--ce")) {
     return calculate_overclock(recipe, voltage);
   }
@@ -184,14 +164,13 @@ export function run_recipe(recipe) {
   );
   const output = [];
   const voltage_flag = parse_flag(recipe.flags, "--filter");
+
   let voltage = -1;
 
   if (voltage_flag) {
     voltage = get_voltage_from_name(voltage_flag);
     if (!voltage) {
-      throw new Error(
-        `\`${voltage}\` is not a vaild voltage, --filter:<voltage> must a vaild voltage`,
-      );
+      throw new Error(`${voltage_flag} must a vaild voltage`);
     }
   }
 
@@ -206,7 +185,7 @@ export function run_recipe(recipe) {
       if (recipe.flags.includes("--extra")) {
         if (recipe.flags.includes("--ce")) {
           throw new Error(
-            "Nomifactory CE does not have UEV+ Voltage, voltages in Nomifactory caps to MAX",
+            "Nomifactory CE does not have UEV+ Voltage, voltages in Nomifactory caps to MAX (sames as UHV)",
           );
         }
         for (let index = eu_tier; index <= 14; index++) {
@@ -229,7 +208,7 @@ export function run_recipe(recipe) {
       if (recipe.flags.includes("--extra")) {
         if (recipe.flags.includes("--ce")) {
           throw new Error(
-            "Nomifactory CE does not have UEV+ Voltage, voltages in Nomifactory caps to MAX",
+            "Nomifactory CE does not have UEV+ Voltage, voltages in Nomifactory caps to MAX (sames as UHV)",
           );
         }
         for (let index = eu_tier; index <= 14; index++) {

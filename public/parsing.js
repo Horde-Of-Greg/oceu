@@ -1,4 +1,25 @@
 import { parse_duration } from "./util.js";
+export function check_recipe(recipe) {
+  if (recipe.base_eu < 0) {
+    throw new Error("EU cost must be positive");
+  }
+  if (recipe.base_duration <= 0) {
+    throw new Error("Recipe duration must be positive");
+  }
+  if (recipe.base_chance < 0 || recipe.base_chance_bonus < 0) {
+    throw new Error("Recipe chance must be positive");
+  }
+
+  if (recipe.base_chance > 100 || recipe.base_chance_bonus > 100) {
+    throw new Error("Recipe chance must be smaller than 100%");
+  }
+  if (recipe.parallel < 0) {
+    throw new Error("Recipe parallel must be positive");
+  }
+  if (recipe.amperage < 0) {
+    throw new Error("Recipe amperage must be positive");
+  }
+}
 
 export function parse_input(input) {
   input = input.split(" ");
@@ -41,35 +62,6 @@ export function parse_input(input) {
     };
   }
 
-  if (
-    isNaN(output.base_eu) ||
-    isNaN(output.base_duration) ||
-    isNaN(output.base_chance) ||
-    isNaN(output.base_chance_bonus) ||
-    isNaN(output.base_parallel) ||
-    isNaN(output.amperage)
-  ) {
-    throw new Error("All arguments must be numeric");
-  }
-  if (output.base_eu < 0) {
-    throw new Error("EU cost must be positive");
-  }
-  if (output.base_duration <= 0) {
-    throw new Error("Recipe duration must be positive");
-  }
-  if (output.base_chance < 0 || output.base_chance_bonus < 0) {
-    throw new Error("Recipe chance must be positive");
-  }
-
-  if (output.base_chance > 100 || output.base_chance_bonus > 100) {
-    throw new Error("Recipe chance must be smaller than 100%");
-  }
-  if (output.parallel < 0) {
-    throw new Error("Recipe parallel must be positive");
-  }
-  if (output.amperage < 0) {
-    throw new Error("Recipe amperage must be positive");
-  }
-
+  check_recipe(output);
   return output;
 }

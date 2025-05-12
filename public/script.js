@@ -7,6 +7,7 @@ import {
 } from "./util.js";
 import { generate_report } from "./report.js";
 import { run_recipe } from "./oceu.js";
+import { check_recipe } from "./parsing.js";
 
 function generate_table_web(data, recipe) {
   const table = document.querySelector("#output_table tbody");
@@ -66,13 +67,11 @@ function read_recipe() {
   const recipe_heat = parseInt(document.getElementById("recipe_heat").value);
   const coil_heat = parseInt(document.getElementById("recipe_coil_heat").value);
   const parallel = parseInt(document.getElementById("recipe_parallel").value);
-  const voltage = get_voltage_from_name(
-    document.getElementById("voltage").value,
-  );
+  const voltage = document.getElementById("voltage").value;
 
   let flags = [];
   if (voltage) {
-    flags.push(`--filter:${get_tier_name(voltage)}`);
+    flags.push(`--filter:${voltage}`);
   }
 
   if (document.getElementById("lcr").checked) {
@@ -119,13 +118,14 @@ function read_recipe() {
     amperage: 1,
   };
 
+  check_recipe(recipe);
+
   return recipe;
 }
 
 export function update_result() {
-  const recipe = read_recipe();
-
   try {
+    const recipe = read_recipe();
     if (recipe.base_eu && recipe.base_duration) {
       const [recipe_, output] = run_recipe(recipe);
       generate_table_web(output, recipe);
