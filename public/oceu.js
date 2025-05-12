@@ -170,7 +170,7 @@ export function run_recipe(recipe) {
   if (voltage_flag) {
     voltage = get_voltage_from_name(voltage_flag);
     if (!voltage) {
-      throw new Error(`${voltage_flag} must a vaild voltage`);
+      throw new Error(`${voltage_flag} is not a vaild voltage`);
     }
   }
 
