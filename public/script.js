@@ -9,87 +9,57 @@ import { generate_report } from "./report.js";
 import { run_recipe } from "./oceu.js";
 import { check_recipe } from "./parsing.js";
 
-function generate_table_web(data, recipe) {
-  const table = document.querySelector("#output_table tbody");
-  const header = document.querySelector("#output_table thead tr");
+let recipe_storage = [];
 
-  const rates_flag = parse_flag(recipe.flags, "--rates");
-  table.innerHTML = "";
-  header.innerHTML = "";
-
-  [
-    "EU Cost",
-    "Duration",
-    data[0].chance ? "Chance" : "",
-    data[0].parallel ? "Parallel" : "",
-    rates_flag ? "Rates" : "",
-    "Voltage",
-  ].forEach((item) => {
-    const th = document.createElement("th");
-    if (item) {
-      th.textContent = item;
-      header.appendChild(th);
-    }
-  });
-
-  data.forEach((item) => {
-    const row = document.createElement("tr");
-    row.scope = "row";
-
-    const cells = [
-      `${item.eu} EU/t`,
-      item.time > 20 ? `${item.time / 20}s` : `${item.time}t`,
-      item.chance ? `${item.chance}%` : "",
-      item.parallel ? `${item.parallel}x` : "",
-      rates_flag ? calculate_rates(item, rates_flag) : "",
-      recipe.flags.includes("--ce") && item.tier == 9
-        ? "MAX"
-        : get_tier_name(item.tier),
-    ];
-    cells.forEach((cellData) => {
-      if (cellData) {
-        const td = document.createElement("td");
-        td.textContent = cellData;
-        row.appendChild(td);
-      }
-    });
-    table.appendChild(row);
-  });
+function create_header(header, headerElement) {
+  const th = $("<th>").text(header);
+  $(headerElement).append(th);
 }
 
 function read_recipe() {
-  const eu = parseInt(document.getElementById("recipe_eu").value);
-  const time = parse_duration(document.getElementById("recipe_time").value);
-  const chance = parseFloat(document.getElementById("recipe_chance").value);
-  const chance_bonus = parseFloat(
-    document.getElementById("recipe_chance_bonus").value,
-  );
-  const recipe_heat = parseInt(document.getElementById("recipe_heat").value);
-  const coil_heat = parseInt(document.getElementById("recipe_coil_heat").value);
-  const parallel = parseInt(document.getElementById("recipe_parallel").value);
-  const voltage = document.getElementById("voltage").value;
+  const ELEMENT_IDS = {
+    eu: "#recipe_eu",
+    time: "#recipe_time",
+    chance: "#recipe_chance",
+    chance_bonus: "#recipe_chance_bonus",
+    recipe_heat: "#recipe_heat",
+    coil_heat: "#recipe_coil_heat",
+    parallel: "#recipe_parallel",
+    voltage: "#voltage",
+    rates: "#rates",
+    mats: "#mats",
+    lcr: "#lcr",
+    config: "#config",
+    ce: "#ce",
+    extra: "#extra",
+  };
+
+  const parse = (id, parser = parseFloat) => {
+    const value = $(id).val();
+    return parser(value || 0);
+  };
+
+  const eu = parse(ELEMENT_IDS.eu, parseInt);
+  const time = parse_duration(parse(ELEMENT_IDS.time).toString());
+  const chance = parse(ELEMENT_IDS.chance);
+  const chanceBonus = parse(ELEMENT_IDS.chance_bonus);
+  const recipeHeat = parse(ELEMENT_IDS.recipe_heat, parseInt);
+  const coilHeat = parse(ELEMENT_IDS.coil_heat, parseInt);
+  const parallel = parse(ELEMENT_IDS.parallel, parseInt);
+  const voltage = $(ELEMENT_IDS.voltage).val();
 
   let flags = [];
   if (voltage) {
     flags.push(`--filter:${voltage}`);
   }
 
-  if (document.getElementById("lcr").checked) {
-    flags.push("--lcr");
-  }
-  if (document.getElementById("config").checked) {
-    flags.push("--config");
-  }
-  if (document.getElementById("ce").checked) {
-    flags.push("--ce");
-  }
+  if ($(ELEMENT_IDS.lcr).is(":checked")) flags.push("--lcr");
+  if ($(ELEMENT_IDS.config).is(":checked")) flags.push("--config");
+  if ($(ELEMENT_IDS.ce).is(":checked")) flags.push("--ce");
+  if ($(ELEMENT_IDS.extra).is(":checked")) flags.push("--extra");
 
-  if (document.getElementById("extra").checked) {
-    flags.push("--extra");
-  }
-
-  const rates = parseInt(document.getElementById("rates").value);
-  const mats = parseInt(document.getElementById("mats").value);
+  const rates = parse(ELEMENT_IDS.rates, parseInt);
+  const mats = parse(ELEMENT_IDS.mats, parseInt);
 
   if (rates && mats) {
     flags.push(`--rates:${rates * mats}`);
@@ -103,12 +73,12 @@ function read_recipe() {
     base_eu: eu,
     base_duration: time,
     base_chance: chance,
-    base_chance_bonus: chance_bonus,
-    base_recipe_heat: recipe_heat,
-    base_coil_heat: coil_heat,
+    base_chance_bonus: chanceBonus,
+    base_recipe_heat: recipeHeat,
+    base_coil_heat: coilHeat,
     base_parallel: parallel,
     flags: flags,
-    oc_type: recipe_heat
+    oc_type: recipeHeat
       ? parallel
         ? "ebf parallel"
         : "ebf"
@@ -123,7 +93,76 @@ function read_recipe() {
   return recipe;
 }
 
-export function update_result() {
+function load_nth_recipe_to_input(index) {
+  const recipe = recipe_storage[index];
+  $("#recipe_eu").val(recipe.base_eu);
+  $("#recipe_time").val(recipe.base_duration / 20);
+  $("#recipe_chance").val(recipe.base_chance);
+  $("#recipe_chance_bonus").val(recipe.base_chance_bonus);
+  $("#recipe_heat").val(recipe.base_recipe_heat);
+  $("#recipe_coil_heat").val(recipe.base_coil_heat);
+  $("#recipe_parallel").val(recipe.base_parallel);
+  $("#rates").val(recipe.rates);
+  $("#lcr").prop("checked", recipe.flags.includes("--lcr"));
+  $("#config").prop("checked", recipe.flags.includes("--config"));
+  $("#ce").prop("checked", recipe.flags.includes("--ce"));
+  $("#extra").prop("checked", recipe.flags.includes("--extra"));
+}
+
+function create_rows(data, body, flags) {
+  $(body).empty();
+  const ratesFlag = parse_flag(flags, "--rates");
+
+  data.forEach((item) => {
+    const row = $("<tr>");
+    const cells = [
+      `${item.eu} EU/t`,
+      item.time > 20 ? `${item.time / 20}s` : `${item.time}t`,
+      item.chance ? `${item.chance}%` : "",
+      item.parallel ? `${item.parallel}x` : "",
+      ratesFlag ? calculate_rates(item, ratesFlag) : "",
+      flags.includes("--ce") && item.tier == 9
+        ? "MAX"
+        : get_tier_name(item.tier),
+    ];
+
+    cells.forEach((cellData) => {
+      if (cellData) {
+        const td = $("<td>").text(cellData);
+        row.append(td);
+      }
+    });
+
+    $(body).append(row);
+  });
+}
+
+function generate_table_web(data, recipe) {
+  const table = $("#output_table tbody");
+  const header = $("#output_table thead tr");
+
+  const ratesFlag = parse_flag(recipe.flags, "--rates");
+
+  const headers = {
+    base_eu: "EU Cost",
+    base_duration: "Duration",
+    base_chance: "Chance",
+    base_parallel: "Parallel",
+    _rates: ratesFlag ? "Rates" : "",
+    _voltage: "Voltage",
+  };
+
+  $(header).empty();
+  Object.entries(headers).forEach(([key, value]) => {
+    if (recipe[key] || (value && key.startsWith("_"))) {
+      create_header(value, header);
+    }
+  });
+
+  create_rows(data, table, recipe.flags);
+}
+
+function update_result() {
   try {
     const recipe = read_recipe();
     if (recipe.base_eu && recipe.base_duration) {
@@ -131,114 +170,102 @@ export function update_result() {
       generate_table_web(output, recipe);
     }
   } catch (error) {
-    const table = document.querySelector("#output_table tbody");
-    const header = document.querySelector("#output_table thead tr");
+    const table = $("#output_table tbody");
+    const header = $("#output_table thead tr");
 
-    table.innerHTML = "";
-    header.innerHTML = "";
+    $(table).empty();
+    $(header).empty();
 
-    const tr = document.createElement("tr");
-    const td = document.createElement("td");
-    td.textContent = `${error}`;
-    tr.appendChild(td);
-    table.appendChild(tr);
+    const tr = $("<tr>");
+    const td = $("<td>").text(`Error: ${error.message}`).css("color", "red");
+    tr.append(td);
+    table.append(tr);
   }
 }
 
-export function load_recipe_to_view(recipes) {
-  const table = document.querySelector("#recipe_table tbody");
-  const header = document.querySelector("#recipe_table thead tr");
+function load_recipe_to_view(recipes) {
+  const table = $("#recipe_table tbody");
+  const header = $("#recipe_table thead tr");
 
-  table.innerHTML = "";
-  header.innerHTML = "";
+  const labels = {
+    name: "Name",
+    base_eu: "EU Cost",
+    base_duration: "Duration",
+    base_chance: "Chance",
+    base_parallel: "Parallel",
+    base_recipe_heat: "Recipe Heat",
+    base_coil_heat: "Coil Heat",
+  };
 
-  [
-    "EU Cost",
-    "Duration",
-    recipes.some((item) => {
-      item.base_chance;
-    })
-      ? "Chance"
-      : "",
-
-    recipes.some((item) => {
-      item.base_parallel;
-    })
-      ? "Parallel"
-      : "",
-  ].forEach((item) => {
-    const th = document.createElement("th");
-    if (item) {
-      th.textContent = item;
-      header.appendChild(th);
+  $(header).empty();
+  Object.entries(labels).forEach(([key, value]) => {
+    if (recipes.some((recipe) => recipe[key])) {
+      create_header(value, header);
     }
   });
 
-  recipes.forEach((item) => {
-    if (item.base_eu && item.base_duration) {
-      const row = document.createElement("tr");
-      const cells = [
-        `${item.base_eu} EU/t`,
-        `${item.base_duration / 20}s`,
-        item.chance ? `${item.base_chance}%` : "",
-        item.parallel ? `${item.base_parallel}x` : "",
-      ];
+  $(table).empty();
+  recipes.forEach((item, index) => {
+    const row = $("<tr>");
+    const cells = {
+      name: item.name,
+      base_eu: `${item.base_eu} EU/t`,
+      base_duration:
+        item.base_duration < 20
+          ? `${item.base_duration}t`
+          : `${item.base_duration / 20}s`,
+      base_chance: item.base_chance ? `${item.base_chance}%` : "",
+      base_parallel: item.base_parallel ? `${item.base_parallel}x` : "",
+      base_recipe_heat: item.base_recipe_heat
+        ? `${item.base_recipe_heat}K`
+        : "",
+      base_coil_heat: item.base_coil_heat ? `${item.base_coil_heat}K` : "",
+    };
 
-      cells.forEach((cell_data) => {
-        if (cell_data) {
-          const td = document.createElement("td");
-          td.textContent = cell_data;
-          row.appendChild(td);
-        }
-      });
-      table.appendChild(row);
-    }
+    Object.values(cells).forEach((cellData) => {
+      if (cellData) {
+        const td = $("<td>").text(cellData);
+        row.append(td);
+      }
+    });
+
+    console.log(index);
+    row.click(() => {
+      load_nth_recipe_to_input(index);
+    });
+
+    table.append(row);
   });
 }
 
-window.update_result = update_result;
-let recipe_storage = [];
-
-document.getElementById("bulk_add_button").addEventListener("click", () => {
+$("#bulk_add_button").click(() => {
+  const name = $("#recipe_name").val();
   const recipe = read_recipe();
-
+  recipe.name = name || `Recipe ${recipe_storage.length + 1}`;
   if (recipe) {
     recipe_storage.push(recipe);
     load_recipe_to_view(recipe_storage);
   }
 });
 
-document.getElementById("gen_report_button").addEventListener("click", () => {
-  const report_table = document.querySelector("#report_table tbody");
-  const report_headers = document.querySelector("#report_table thead tr");
+$("#gen_report_button").click(() => {
+  const reportTable = $("#report_table tbody");
+  const reportHeaders = $("#report_table thead tr");
   const report = generate_report(recipe_storage)[1];
 
-  report_table.innerHTML = "";
-  report_headers.innerHTML = "";
+  $(reportTable).empty();
+  $(reportHeaders).empty();
 
-  let production_speed = document.createElement("th");
-  let bottleneck = document.createElement("th");
-  let ratios = document.createElement("th");
+  const headers = ["Production Rates", "Bottleneck", "Ratios"];
+  headers.forEach((header) => create_header(header, reportHeaders));
 
-  production_speed.textContent = "Production Rates";
-  bottleneck.textContent = "Bottleneck";
-  ratios.textContent = "Ratios";
+  const row = $("<tr>");
+  const productionSpeed = $("<td>").text(report.production_speed);
+  const bottleneck = $("<td>").text(report.bottleneck);
+  const ratios = $("<td>").text(report.ratios);
 
-  report_headers.appendChild(production_speed);
-  report_headers.appendChild(bottleneck);
-  report_headers.appendChild(ratios);
-
-  production_speed = document.createElement("td");
-  bottleneck = document.createElement("td");
-  ratios = document.createElement("td");
-  const row = document.createElement("tr");
-
-  production_speed.textContent = report.production_speed;
-  bottleneck.textContent = report.bottleneck;
-  ratios.textContent = report.ratios;
-
-  row.appendChild(production_speed);
-  row.appendChild(bottleneck);
-  row.appendChild(ratios);
-  report_table.appendChild(row);
+  row.append(productionSpeed, bottleneck, ratios);
+  reportTable.append(row);
 });
+
+window.update_result = update_result;

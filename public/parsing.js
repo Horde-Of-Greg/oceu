@@ -19,6 +19,15 @@ export function check_recipe(recipe) {
   if (recipe.amperage < 0) {
     throw new Error("Recipe amperage must be positive");
   }
+
+  if (
+    (recipe.base_recipe_heat || recipe.base_coil_heat) &&
+    !(recipe.base_recipe_heat && recipe.base_coil_heat)
+  ) {
+    throw new Error(
+      "Both recipe temperature and coil temperature must be provided",
+    );
+  }
 }
 
 export function parse_input(input) {

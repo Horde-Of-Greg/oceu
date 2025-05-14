@@ -30,11 +30,10 @@ export function generate_report(recipes) {
   const production_speed = Math.min(...production_rates);
   if (production_speed < 0.01) {
     output.production_speed = `${(production_speed * 60).toFixed(2)}/min`;
-    output.bottleneck = `${production_rates.indexOf(production_speed) + 1}`;
   } else {
     output.production_speed = `${production_speed.toFixed(2)}/s`;
-    output.bottleneck = `${production_rates.indexOf(production_speed) + 1}`;
   }
+  output.bottleneck = `Recipe ${production_rates.indexOf(production_speed) + 1}`;
 
   const ratios = get_ratios(production_rates);
   output.ratios = ratios.join(":");

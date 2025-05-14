@@ -31,6 +31,7 @@
     <script type="module" src="gen_table.js" defer></script>
     <script type="module" src="parsing.js" defer></script>
     <script type="module" src="report.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body class="container mt-5">
@@ -128,8 +129,15 @@
                     </div>
                 </div>
             </form>
-            <button id="bulk_add_button" class="btn btn-outline-primary">Add Recipe</button>
-            <button id="gen_report_button" class="btn btn-outline-secondary">Show More Data</button>
+            <div class="row">
+                <div class="col input-group">
+                    <button id="bulk_add_button" class="btn btn-outline-primary">Add Recipe</button>
+                    <input type="text" class="form-control" id="recipe_name" placeholder="Recipe Name"> </input>
+                </div>
+                <div class="col input-group">
+                    <button id="gen_report_button" class="btn btn-outline-secondary">Show More Data</button>
+                </div>
+            </div>
         </div>
 
 

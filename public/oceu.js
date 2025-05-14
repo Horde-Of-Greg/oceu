@@ -141,7 +141,7 @@ function calculate_ebf_overclock(recipe, voltage) {
     ebf_eu_discount(recipe.base_recipe_heat, effective_heat) *
     Math.pow(4, overclock_tiers);
 
-  const effective_time =
+  let effective_time =
     recipe.base_duration /
     Math.pow(4, Math.min(overclock_tiers, ebf_perfect_overclocks)) /
     Math.pow(2, Math.max(0, overclock_tiers - ebf_perfect_overclocks));
