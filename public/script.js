@@ -188,6 +188,7 @@ function load_recipe_to_view(recipes) {
   const header = $("#recipe_table thead tr");
 
   const labels = {
+    _: "#",
     name: "Name",
     base_eu: "EU Cost",
     base_duration: "Duration",
@@ -198,15 +199,29 @@ function load_recipe_to_view(recipes) {
   };
 
   $(header).empty();
+  $(table).empty();
+  $("#recipe_button_container").css("display", "block");
+
   Object.entries(labels).forEach(([key, value]) => {
-    if (recipes.some((recipe) => recipe[key])) {
+    if (recipes.some((recipe) => recipe[key]) || key.startsWith("_")) {
       create_header(value, header);
     }
   });
 
-  $(table).empty();
+  let selected_row = null;
+
   recipes.forEach((item, index) => {
     const row = $("<tr>");
+
+    const checkboxCell = $("<td>");
+    const checkbox = $("<input>")
+      .attr("type", "checkbox")
+      .addClass("form-check-input")
+      .addClass("row-checkbox");
+
+    checkboxCell.append(checkbox);
+    row.append(checkboxCell);
+
     const cells = {
       name: item.name,
       base_eu: `${item.base_eu} EU/t`,
@@ -229,7 +244,6 @@ function load_recipe_to_view(recipes) {
       }
     });
 
-    console.log(index);
     row.click(() => {
       load_nth_recipe_to_input(index);
     });
@@ -266,6 +280,24 @@ $("#gen_report_button").click(() => {
 
   row.append(productionSpeed, bottleneck, ratios);
   reportTable.append(row);
+});
+
+$("#select-all").click(function () {
+  const allChecked =
+    $(".row-checkbox:checked").length === $(".row-checkbox").length;
+  $(".row-checkbox").prop("checked", !allChecked);
+});
+
+$("#delete-selected").click(function () {
+  $(".row-checkbox:checked").each(function () {
+    const row = $(this).closest("tr");
+    recipe_storage.splice(row.rowIndex, 1);
+    row.remove();
+  });
+  if ($(".row-checkbox").length === 0) {
+    $("#recipe_button_container").attr("style", "display: none !important");
+    $("#recipe_table thead tr th").remove();
+  }
 });
 
 window.update_result = update_result;

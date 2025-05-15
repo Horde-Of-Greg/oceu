@@ -1,7 +1,11 @@
-import { get_ratios, parse_flag } from "./util.js";
+import { get_ratios, parse_flag, format_rates } from "./util.js";
 import { run_recipe } from "./oceu.js";
 
 export function generate_report(recipes) {
+  if (recipes.length === 0) {
+    throw new Error("You must enter at least 1 Recipe!");
+  }
+
   let output = {};
   let results = [];
   const production_rates = [];
@@ -28,11 +32,7 @@ export function generate_report(recipes) {
 
   // total production rates = slowest of all machines
   const production_speed = Math.min(...production_rates);
-  if (production_speed < 0.01) {
-    output.production_speed = `${(production_speed * 60).toFixed(2)}/min`;
-  } else {
-    output.production_speed = `${production_speed.toFixed(2)}/s`;
-  }
+  output.production_speed = format_rates(production_speed);
   output.bottleneck = `Recipe ${production_rates.indexOf(production_speed) + 1}`;
 
   const ratios = get_ratios(production_rates);
