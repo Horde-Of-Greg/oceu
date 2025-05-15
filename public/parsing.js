@@ -38,7 +38,6 @@ export function parse_input(input) {
     }
 
     check_recipe(json);
-    console.log(json);
     return json;
   } catch {}
 
