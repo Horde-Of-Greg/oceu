@@ -35,7 +35,7 @@ export function generate_table(outputs, flags) {
   });
 
   // Define unit suffixes and separator
-  const separator = " | ";
+  const separator = " │ ";
 
   let table = outputs
     .map((row) => {
@@ -68,7 +68,47 @@ export function generate_table(outputs, flags) {
     })
     .join("\n");
 
-  return table;
+  eu_length += 5;
+  time_length += 1;
+  let header = generate_entry("EU/t", "", separator, eu_length);
+  header += generate_entry("Time", "", separator, time_length);
+  if (needs_chance) {
+    header += generate_entry("Chance", "", separator, chance_length);
+  }
+  if (needs_parallel) {
+    header += generate_entry("Parallel", "", separator, parallel_length);
+  }
+  if (rates_flag) {
+    header += generate_entry("Rates", "", separator, rates_length);
+  }
+  header += generate_entry("Voltage", "", "", tier_length);
+  header += "\n";
+
+  console.log(time_length);
+  header += "─".repeat(eu_length + 1);
+  header += "┼";
+  header += "─".repeat(time_length + 2);
+  header += "┼";
+
+  if (needs_chance) {
+    header += "─".repeat(chance_length);
+    header += "┼";
+  }
+  if (needs_parallel) {
+    header += "─".repeat(parallel_length);
+    header += "┼";
+  }
+
+  if (rates_flag) {
+    header += "─".repeat(rates_length);
+    header += "┼";
+  }
+
+  header += "─".repeat(8);
+  header += "\n";
+  header += table;
+
+  return header;
 }
 
 // Helper function to format each entry
