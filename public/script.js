@@ -300,4 +300,30 @@ $("#delete-selected").click(function () {
   }
 });
 
+function copy_to_clipboard(text) {
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val(text).select();
+  document.execCommand("copy");
+  $temp.remove();
+}
+function get_from_clipboard() {
+  navigator.clipboard.readText().then((text) => {
+    return text;
+  });
+}
+
+$("#export-recipes").click(function () {
+  copy_to_clipboard(JSON.stringify(recipe_storage));
+  alert("Exported recipes to clipboard");
+});
+
+$("#import-recipes").click(function () {
+  navigator.clipboard.readText().then((clipboard) => {
+    recipe_storage = JSON.parse(clipboard);
+    load_recipe_to_view(recipe_storage);
+    alert("Imported recipes from clipboard");
+  });
+});
+
 window.update_result = update_result;
