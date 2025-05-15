@@ -31,6 +31,17 @@ export function check_recipe(recipe) {
 }
 
 export function parse_input(input) {
+  try {
+    let json = JSON.parse(input);
+    if (json.length === 1) {
+      json = json[0];
+    }
+
+    check_recipe(json);
+    console.log(json);
+    return json;
+  } catch {}
+
   input = input.split(" ");
 
   const flags = input.filter((value) => value != "-" && value.startsWith("--"));
