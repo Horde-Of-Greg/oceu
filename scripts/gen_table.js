@@ -5,8 +5,8 @@ export function generate_table(outputs, flags) {
   let eu_length = 3,
     time_length = 0,
     tier_length = 3,
-    parallel_length = 1,
-    chance_length = 0,
+    parallel_length = 7,
+    chance_length = 4,
     rates_length = 6;
 
   const needs_chance = outputs[0].chance,
@@ -84,23 +84,21 @@ export function generate_table(outputs, flags) {
   header += generate_entry("Voltage", "", "", tier_length);
   header += "\n";
 
-  console.log(time_length);
   header += "─".repeat(eu_length + 1);
   header += "┼";
   header += "─".repeat(time_length + 2);
   header += "┼";
 
   if (needs_chance) {
-    header += "─".repeat(chance_length);
+    header += "─".repeat(chance_length + 4);
     header += "┼";
   }
   if (needs_parallel) {
-    header += "─".repeat(parallel_length);
+    header += "─".repeat(parallel_length + 3);
     header += "┼";
   }
-
   if (rates_flag) {
-    header += "─".repeat(rates_length);
+    header += "─".repeat(rates_length + 2);
     header += "┼";
   }
 
