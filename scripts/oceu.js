@@ -33,34 +33,23 @@ function calculate_overclock(recipe, voltage) {
 
   let overclock_tiers = Math.max(0, voltage - get_voltage_tier(base_eu, is_ce));
 
-  let effective_eu = Math.floor(base_eu * Math.pow(4, overclock_tiers));
+  let effective_eu = base_eu;
   let effective_time = recipe.base_duration;
 
-  if (is_ce) {
-    if (base_eu >= 16) {
-      let effective_eu = base_eu;
-      let overclock_count = 0;
-      while (
-        Math.floor(effective_time / 2.8) > 1 &&
-        overclock_count < overclock_tiers
-      ) {
-        effective_time = Math.ceil(effective_time / 2.8);
-        effective_eu = effective_eu * 4;
-
-        overclock_count += 1;
-      }
-    } else {
-      effective_time = Math.floor(
-        Math.max(1, recipe.base_duration / Math.pow(2, overclock_tiers)),
-      );
-    }
-  } else if (recipe.flags.includes("--lcr")) {
-    effective_time = Math.floor(
-      Math.max(1, recipe.base_duration / Math.pow(4, overclock_tiers)),
+  if (is_ce && base_eu >= 16) {
+    let halves = Math.floor(Math.log(effective_time) / Math.log(2.8));
+    let overclock_count = Math.min(halves, overclock_tiers);
+    effective_time = Math.max(
+      1,
+      Math.ceil(effective_time / Math.pow(2.8, overclock_count)),
     );
+    effective_eu = Math.floor(base_eu * Math.pow(4, overclock_count));
   } else {
-    effective_time = Math.floor(
-      Math.max(1, recipe.base_duration / Math.pow(2, overclock_tiers)),
+    let divisor = recipe.flags.includes("--lcr") ? 4 : 2;
+    effective_eu = Math.floor(base_eu * Math.pow(4, overclock_tiers));
+    effective_time = Math.max(
+      1,
+      Math.floor(recipe.base_duration / Math.pow(divisor, overclock_tiers)),
     );
   }
 
