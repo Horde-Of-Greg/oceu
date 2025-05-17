@@ -3,7 +3,7 @@ import { parse_flag, get_tier_name, calculate_rates } from "./util.js";
 export function generate_table(outputs, flags) {
   // Initialize lengths for each column
   let eu_length = 3,
-    time_length = 0,
+    time_length = 3,
     tier_length = 3,
     parallel_length = 7,
     chance_length = 4,
@@ -28,7 +28,7 @@ export function generate_table(outputs, flags) {
     }
 
     row.amount = 1;
-    if (rates_flag) {
+    if (rates_flag !== null) {
       row.rates = calculate_rates(row, rates_flag);
       rates_length = Math.max(row.rates.toString().length, rates_length);
     }
@@ -53,7 +53,7 @@ export function generate_table(outputs, flags) {
       if (needs_parallel) {
         entry += generate_entry(row.parallel, "x", separator, parallel_length);
       }
-      if (rates_flag) {
+      if (rates_flag !== null) {
         entry += generate_entry(row.rates, "", separator, rates_length);
       }
 
@@ -69,7 +69,6 @@ export function generate_table(outputs, flags) {
     .join("\n");
 
   eu_length += 5;
-  time_length += 1;
   let header = generate_entry("EU/t", "", separator, eu_length);
   header += generate_entry("Time", "", separator, time_length);
   if (needs_chance) {
@@ -78,7 +77,7 @@ export function generate_table(outputs, flags) {
   if (needs_parallel) {
     header += generate_entry("Parallel", "", separator, parallel_length);
   }
-  if (rates_flag) {
+  if (rates_flag !== null) {
     header += generate_entry("Rates", "", separator, rates_length);
   }
   header += generate_entry("Voltage", "", "", tier_length);
@@ -86,7 +85,7 @@ export function generate_table(outputs, flags) {
 
   header += "─".repeat(eu_length + 1);
   header += "┼";
-  header += "─".repeat(time_length + 2);
+  header += "─".repeat(time_length + 3);
   header += "┼";
 
   if (needs_chance) {
@@ -97,7 +96,7 @@ export function generate_table(outputs, flags) {
     header += "─".repeat(parallel_length + 3);
     header += "┼";
   }
-  if (rates_flag) {
+  if (rates_flag !== null) {
     header += "─".repeat(rates_length + 2);
     header += "┼";
   }
