@@ -61,11 +61,12 @@ export function find_flag(flags, flag) {
 
 export function parse_flag(flags, flag) {
   const flag_data = find_flag(flags, flag);
-  if (flag_data.startsWith("--rates")) {
-    return eval(flag_data.substring(flag.length + 1));
-  }
   if (!flag_data) {
     return;
+  }
+
+  if (flag_data.startsWith("--rates")) {
+    return eval(flag_data.substring(flag.length + 1));
   }
 
   // skip the : between the flag and the value
