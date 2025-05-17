@@ -16,7 +16,11 @@ export function generate_table(outputs, flags) {
   // Calculate maximum lengths for each column for padding
   outputs.forEach((row) => {
     eu_length = Math.max(row.eu.toString().length, eu_length);
-    time_length = Math.max((row.time / 20).toString().length, time_length);
+    time_length = Math.max(
+      (row.time / 20).toString().length,
+      row.time.toString().length,
+      time_length,
+    );
     if (needs_chance) {
       chance_length = Math.max(row.chance.toString().length, chance_length);
     }
@@ -70,7 +74,7 @@ export function generate_table(outputs, flags) {
 
   eu_length += 5;
   let header = generate_entry("EU/t", "", separator, eu_length);
-  header += generate_entry("Time", "", separator, time_length);
+  header += generate_entry("Time", "", separator, time_length + 1);
   if (needs_chance) {
     header += generate_entry("Chance", "", separator, chance_length);
   }
