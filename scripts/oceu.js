@@ -98,7 +98,8 @@ function calculate_ebf_overclock(recipe, voltage) {
   let base_eu = recipe.base_eu;
 
   if (recipe.oc_type.includes("parallel")) {
-    parallel = Math.floor(
+    console.log(recipe.amperage);
+    parallel = Math.min(
       recipe.base_parallel,
       Math.floor((recipe.amperage * get_eu_t(voltage)) / recipe.base_eu),
     );
