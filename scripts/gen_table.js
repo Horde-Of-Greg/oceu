@@ -65,12 +65,7 @@ export function generate_table(outputs, flags) {
       if (flags.includes("--ce") && row.tier == 9) {
         entry += generate_entry("MAX", "", "", tier_length);
       } else {
-        entry += generate_entry(
-          get_tier_name(row.tier) + " ".repeat(4),
-          "",
-          "",
-          tier_length,
-        );
+        entry += generate_entry(get_tier_name(row.tier), "", "", tier_length);
       }
 
       return entry;
