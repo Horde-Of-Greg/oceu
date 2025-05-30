@@ -32,7 +32,7 @@ export function generate_table(outputs, flags) {
     }
 
     row.amount = 1;
-    if (rates_flag !== null) {
+    if (rates_flag) {
       row.rates = calculate_rates(row, rates_flag);
       rates_length = Math.max(row.rates.toString().length, rates_length);
     }
@@ -57,7 +57,7 @@ export function generate_table(outputs, flags) {
       if (needs_parallel) {
         entry += generate_entry(row.parallel, "x", separator, parallel_length);
       }
-      if (rates_flag !== null) {
+      if (rates_flag) {
         entry += generate_entry(row.rates, "", separator, rates_length);
       }
 
@@ -81,7 +81,7 @@ export function generate_table(outputs, flags) {
   if (needs_parallel) {
     header += generate_entry("Parallel", "", separator, parallel_length);
   }
-  if (rates_flag !== null) {
+  if (rates_flag) {
     header += generate_entry("Rates", "", separator, rates_length);
   }
   header += generate_entry("Voltage", "", "", tier_length);
@@ -100,7 +100,7 @@ export function generate_table(outputs, flags) {
     header += "─".repeat(parallel_length + 3);
     header += "┼";
   }
-  if (rates_flag !== null) {
+  if (rates_flag) {
     header += "─".repeat(rates_length + 2);
     header += "┼";
   }
