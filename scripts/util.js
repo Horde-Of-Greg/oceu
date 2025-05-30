@@ -66,7 +66,7 @@ export function parse_flag(flags, flag) {
   }
 
   if (flag_data.startsWith("--rates")) {
-    return eval(flag_data.substring(flag.length + 1));
+    return eval(flag_data.substring(flag.length + 1)) || null;
   }
 
   // skip the : between the flag and the value
