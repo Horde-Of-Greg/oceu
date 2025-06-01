@@ -8,6 +8,7 @@ export function generate_report(recipes) {
 
   let output = {};
   let results = [];
+  let flags = [];
   const production_rates = [];
 
   recipes.forEach((element) => {
@@ -16,6 +17,7 @@ export function generate_report(recipes) {
       const recipe = arr[0],
         output = arr[1];
       results.push(output);
+      flags.push(recipe.flags);
 
       const rates_flag = parse_flag(recipe.flags, "--rates");
 
@@ -38,5 +40,5 @@ export function generate_report(recipes) {
   const ratios = get_ratios(production_rates);
   output.ratios = ratios.join(":");
 
-  return [results, output];
+  return [results, output, flags];
 }
