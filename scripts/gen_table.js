@@ -44,13 +44,12 @@ export function generate_table(outputs, flags) {
   let table = outputs
     .map((row) => {
       let entry = generate_entry(row.eu, " EU/t", separator, eu_length);
-      if (row.time >= 20) {
-        entry += generate_entry(row.time / 20, "s", separator, time_length);
-      } else {
-        entry += generate_entry(row.time, "t", separator, time_length);
-      }
       // Use ticks if time < 1s
-
+      if (parse_flag(flags, "--tick") || row.time < 20) {
+        entry += generate_entry(row.time, "t", separator, time_length);
+      } else {
+        entry += generate_entry(row.time / 20, "s", separator, time_length);
+      }
       if (needs_chance) {
         entry += generate_entry(row.chance, " %", separator, chance_length);
       }
