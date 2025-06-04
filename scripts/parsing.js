@@ -44,6 +44,10 @@ export function parse_input(input) {
   input = input.split(" ");
 
   const flags = input.filter((value) => value != "-" && value.startsWith("--"));
+  if (flags.includes("--rates")){
+    flags[flags.indexOf("--rates")] = "--rates:1"
+  }
+
   input = input
     .filter((value) => !value.startsWith("--"))
     .map((value) => (value != "-" ? value : null));
