@@ -84,7 +84,7 @@ export function generate_table(outputs, flags) {
   if (rates_flag) {
     header += generate_entry("Rates", "", separator, rates_length);
   }
-  header += generate_entry("Voltage", "", "", tier_length);
+  header += generate_entry("Tier", "", "", tier_length);
   header += "\n";
 
   header += "─".repeat(eu_length + 1);
@@ -105,7 +105,7 @@ export function generate_table(outputs, flags) {
     header += "┼";
   }
 
-  header += "─".repeat(8);
+  header += "─".repeat(5);
   header += "\n";
   header += table;
 
