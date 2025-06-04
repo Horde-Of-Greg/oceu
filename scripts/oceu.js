@@ -36,7 +36,7 @@ function calculate_overclock(recipe, voltage) {
   let effective_eu = base_eu;
   let effective_time = recipe.base_duration;
 
-  if (is_ce && base_eu >= 16) {
+  if (is_ce && base_eu > 16) {
     let halves = Math.floor(Math.log(effective_time) / Math.log(2.8));
     let overclock_count = Math.min(halves, overclock_tiers);
     effective_time = Math.max(
