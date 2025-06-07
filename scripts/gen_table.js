@@ -45,7 +45,7 @@ export function generate_table(outputs, flags) {
     .map((row) => {
       let entry = generate_entry(row.eu, " EU/t", separator, eu_length);
       // Use ticks if time < 1s
-      if (parse_flag(flags, "--tick") || row.time < 20) {
+      if (find_flag(flags, "--tick") || row.time < 20) {
         entry += generate_entry(row.time, "t", separator, time_length);
       } else {
         entry += generate_entry(row.time / 20, "s", separator, time_length);
