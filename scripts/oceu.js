@@ -43,7 +43,7 @@ function calculate_overclock(recipe, voltage) {
       1,
       Math.ceil(effective_time / Math.pow(2.8, overclock_count)),
     );
-    effective_eu = Math.floor(base_eu * Math.pow(4 overclock_count));
+    effective_eu = Math.floor(base_eu * Math.pow(4, overclock_count));
   } else {
     let divisor = recipe.flags.includes("--lcr") ? 4 : 2;
     effective_eu = Math.floor(base_eu * Math.pow(4, overclock_tiers));
