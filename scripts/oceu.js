@@ -45,12 +45,26 @@ function calculate_overclock(recipe, voltage) {
     );
     effective_eu = Math.floor(base_eu * Math.pow(4, overclock_count));
   } else {
-    let divisor = recipe.flags.includes("--lcr") ? 4 : 2;
+    if (recipe.flags.includes("--lcr"){
+      let halves = Math.floor(Math.log(effective_time) / Math.log(2));
+      overclock_tiers = Math.min(halves, overclock_tiers);
+      effective_time = Math.max(
+        1,
+        Math.floor(recipe.base_duration / Math.pow(4, overclock_tiers)),
+      );
+    }
     effective_eu = Math.floor(base_eu * Math.pow(4, overclock_tiers));
-    effective_time = Math.max(
-      1,
-      Math.floor(recipe.base_duration / Math.pow(divisor, overclock_tiers)),
-    );
+    if (recipe.flags.includes("--lcr"){
+      effective_time = Math.max(
+        1,
+        Math.floor(recipe.base_duration / Math.pow(4, overclock_tiers)),
+      );
+    } else {
+      effective_time = Math.max(
+        1,
+        Math.floor(recipe.base_duration / Math.pow(2, overclock_tiers)),
+      );
+    }
   }
 
   if (recipe.flags.includes("--config")) {
