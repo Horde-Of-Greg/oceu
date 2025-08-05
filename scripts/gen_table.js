@@ -92,7 +92,7 @@ export function generate_table(outputs, flags) {
   header += "┼";
 
   if (needs_chance) {
-    header += "─".repeat(chance_length + 4);
+    header += "─".repeat(chance_length + 3);
     header += "┼";
   }
   if (needs_parallel) {
