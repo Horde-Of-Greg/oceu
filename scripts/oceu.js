@@ -78,10 +78,10 @@ function calculate_overclock(recipe, voltage) {
   } else {
     if (recipe.flags.includes("--macerator")) {
       // Macerators in CE only start scaling in chanced outputs after MV
-      let doubling_count = get_voltage_from_name("MV") ? 0 : overclock_count;
+      let doubling_count = voltage === get_voltage_from_name("MV") ? 0 : overclock_count;
     } else {
       // CE fuckery
-      let doubling_count = get_voltage_from_name("MV") ? overclock_count + 1 : overclock_count;
+      let doubling_count = voltage === get_voltage_from_name("MV") ? overclock_count + 1 : overclock_count;
     }
     output.chance = Math.min(100, recipe.base_chance * Math.pow(2, doubling_count));
   }
