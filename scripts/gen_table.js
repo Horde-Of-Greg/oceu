@@ -51,7 +51,7 @@ export function generate_table(outputs, flags) {
         entry += generate_entry(row.time / 20, "s", separator, time_length);
       }
       if (needs_chance) {
-        entry += generate_entry(row.chance, " %", separator, chance_length);
+        entry += generate_entry(row.chance, "%", separator, chance_length);
       }
       if (needs_parallel) {
         entry += generate_entry(row.parallel, "x", separator, parallel_length);
