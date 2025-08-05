@@ -6,7 +6,7 @@ export function generate_table(outputs, flags) {
     time_length = 3,
     tier_length = 3,
     parallel_length = 7,
-    chance_length = 4,
+    chance_length = 5,
     rates_length = 6;
 
   const needs_chance = outputs[0].chance,
