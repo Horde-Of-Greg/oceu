@@ -44,6 +44,15 @@ function calculate_overclock(recipe, voltage) {
       Math.ceil(effective_time / Math.pow(oc_div, overclock_count)),
     );
     effective_eu = Math.floor(base_eu * Math.pow(4, overclock_count));
+
+    if (recipe.flags.includes("--macerator")) {
+      // Macerators in CE only start scaling in chanced outputs after MV
+      let doubling_count = voltage === get_voltage_from_name("MV") ? 0 : overclock_count;
+    } else {
+      // CE fuckery
+      let doubling_count = voltage === get_voltage_from_name("MV") ? overclock_count + 1 : overclock_count;
+    }
+    output.chance = Math.min(100, recipe.base_chance * Math.pow(2, doubling_count));
   } else {
     if (recipe.flags.includes("--lcr")) {
       let halves = Math.floor(Math.log(effective_time) / Math.log(2));
@@ -60,6 +69,10 @@ function calculate_overclock(recipe, voltage) {
         Math.floor(recipe.base_duration / Math.pow(2, overclock_tiers)),
       );
     }
+    output.chance = Math.min(
+      100,
+      recipe.base_chance + recipe.base_chance_bonus * overclock_tiers,
+    );
   }
 
   if (recipe.flags.includes("--config")) {
@@ -69,23 +82,6 @@ function calculate_overclock(recipe, voltage) {
   output.tier = voltage;
   output.eu = effective_eu;
   output.time = effective_time;
-
-  if (is_ce) {
-    output.chance = Math.min(
-      100,
-      recipe.base_chance + recipe.base_chance_bonus * overclock_tiers,
-    );
-  } else {
-    if (recipe.flags.includes("--macerator")) {
-      // Macerators in CE only start scaling in chanced outputs after MV
-      let doubling_count = voltage === get_voltage_from_name("MV") ? 0 : overclock_count;
-    } else {
-      // CE fuckery
-      let doubling_count = voltage === get_voltage_from_name("MV") ? overclock_count + 1 : overclock_count;
-    }
-    output.chance = Math.min(100, recipe.base_chance * Math.pow(2, doubling_count));
-  }
-
   output.chance_bonus = recipe.base_chance_bonus;
 
   return output;
