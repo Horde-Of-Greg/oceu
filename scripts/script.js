@@ -31,6 +31,7 @@ function read_recipe() {
     lcr: "#lcr",
     config: "#config",
     ce: "#ce",
+    macerator_ce: "#macerator_ce",
     extra: "#extra",
   };
 
@@ -57,6 +58,7 @@ function read_recipe() {
   if ($(ELEMENT_IDS.config).is(":checked")) flags.push("--config");
   if ($(ELEMENT_IDS.ce).is(":checked")) flags.push("--ce");
   if ($(ELEMENT_IDS.extra).is(":checked")) flags.push("--extra");
+  if ($(ELEMENT_IDS.macerator_ce).is(":checked")) flags.push("--macerator");
 
   const rates = parse(ELEMENT_IDS.rates, parseInt);
   const mats = parse(ELEMENT_IDS.mats, parseInt);
@@ -282,14 +284,14 @@ $("#gen_report_button").click(() => {
   reportTable.append(row);
 });
 
-$("#select-all").click(function () {
+$("#select-all").click(function() {
   const allChecked =
     $(".row-checkbox:checked").length === $(".row-checkbox").length;
   $(".row-checkbox").prop("checked", !allChecked);
 });
 
-$("#delete-selected").click(function () {
-  $(".row-checkbox:checked").each(function () {
+$("#delete-selected").click(function() {
+  $(".row-checkbox:checked").each(function() {
     const row = $(this).closest("tr");
     recipe_storage.splice(row.rowIndex, 1);
     row.remove();
@@ -313,12 +315,12 @@ function get_from_clipboard() {
   });
 }
 
-$("#export-recipes").click(function () {
+$("#export-recipes").click(function() {
   copy_to_clipboard(JSON.stringify(recipe_storage));
   alert("Exported recipes to clipboard");
 });
 
-$("#import-recipes").click(function () {
+$("#import-recipes").click(function() {
   navigator.clipboard.readText().then((clipboard) => {
     recipe_storage = JSON.parse(clipboard);
     load_recipe_to_view(recipe_storage);
