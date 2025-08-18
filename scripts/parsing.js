@@ -31,17 +31,10 @@ export function check_recipe(recipe) {
 }
 
 export function parse_input(input) {
-  try {
-    let json = JSON.parse(input);
-    if (json.length === 1) {
-      json = json[0];
-    }
-
-    check_recipe(json);
-    return json;
-  } catch { }
-
   input = input.split(" ");
+  if (input.length < 2) {
+    throw new Error("Too few arguments: Must have at least 2");
+  }
 
   const flags = input.filter((value) => value != "-" && value.startsWith("--"));
 
@@ -49,9 +42,10 @@ export function parse_input(input) {
     .filter((value) => !value.startsWith("--"))
     .map((value) => (value != "-" ? value : null));
 
-  if (input.length < 2) {
-    throw new Error("Too few arguments: Must have at least 2");
+  if (flags.includes("--input") || flags.includes("--output")) {
+    flags.push("--rates");
   }
+
   let output = {};
 
   if (input[0] === "ebf") {
