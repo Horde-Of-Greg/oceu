@@ -11,7 +11,7 @@ export function generate_table(outputs, flags) {
 
   const needs_chance = outputs[0].chance,
     needs_parallel = outputs[0].parallel,
-    rates_flag = parse_flag(flags, "--rates");
+    rates_flag = find_flag(flags, "--rates");
 
   // Calculate maximum lengths for each column for padding
   outputs.forEach((row) => {
