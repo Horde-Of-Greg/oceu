@@ -74,6 +74,7 @@ function read_recipe() {
     flags.push(`--output:${mats}`);
   }
 
+  console.log(flags)
   const recipe = {
     base_eu: eu,
     base_duration: time,
@@ -146,7 +147,7 @@ function generate_table_web(data, recipe) {
   const table = $("#output_table tbody");
   const header = $("#output_table thead tr");
 
-  const ratesFlag = parse_flag(recipe.flags, "--rates");
+  const ratesFlag = find_flag(recipe.flags, "--rates");
 
   const headers = {
     base_eu: "EU Cost",
