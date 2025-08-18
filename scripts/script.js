@@ -3,7 +3,7 @@ import {
   get_tier_name,
   get_voltage_from_name,
   calculate_rates,
-  parse_flag,
+  find_flag,
   get_rate_amount
 } from "./util.js";
 import { generate_report } from "./report.js";
