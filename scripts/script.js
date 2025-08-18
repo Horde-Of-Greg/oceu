@@ -4,6 +4,7 @@ import {
   get_voltage_from_name,
   calculate_rates,
   parse_flag,
+  get_rate_amount
 } from "./util.js";
 import { generate_report } from "./report.js";
 import { run_recipe } from "./oceu.js";
@@ -117,7 +118,7 @@ function load_nth_recipe_to_input(index) {
 
 function create_rows(data, body, flags) {
   $(body).empty();
-  const ratesFlag = parse_flag(flags, "--rates");
+  const ratesFlag = find_flag(flags, "--rates");
 
   data.forEach((item) => {
     const row = $("<tr>");
@@ -126,7 +127,7 @@ function create_rows(data, body, flags) {
       item.time > 20 ? `${item.time / 20}s` : `${item.time}t`,
       item.chance ? `${item.chance}%` : "",
       item.parallel ? `${item.parallel}x` : "",
-      ratesFlag ? calculate_rates(item, ratesFlag) : "",
+      ratesFlag ? calculate_rates(item, get_rate_amount(flags)) : "",
       flags.includes("--ce") && item.tier == 9
         ? "MAX"
         : get_tier_name(item.tier),

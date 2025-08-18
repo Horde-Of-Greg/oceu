@@ -54,9 +54,9 @@ export function get_eu_t(voltage) {
 export function find_flag(flags, flag) {
   const data = flags.filter((value) => value.startsWith(flag));
   if (!data) {
-    return;
+    return false;
   }
-  return data[0];
+  return true;
 }
 
 export function parse_flag(flags, flag) {
