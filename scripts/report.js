@@ -22,9 +22,6 @@ export function generate_report(recipes) {
       const rates_flag = parse_flag(recipe.flags, "--rates");
 
       let amount = 1 / (output[0].time / 20);
-      if (rates_flag) {
-        amount = amount * rates_flag;
-      }
       if (output[0].parallel) {
         amount = amount * output[0].parallel;
       }

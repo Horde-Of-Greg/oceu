@@ -104,3 +104,9 @@ export function get_downclocks(parallel) {
   if (parallel < 256) return 3;
   return 4; // parallel >= 256
 }
+
+export function get_rate_amount(flags) {
+  const input = parse_flag(flags, "--input") || 1;
+  const output = parse_flag(flags, "--output") || 1;
+  return output / input;
+}

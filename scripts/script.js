@@ -63,12 +63,15 @@ function read_recipe() {
   const rates = parse(ELEMENT_IDS.rates, parseInt);
   const mats = parse(ELEMENT_IDS.mats, parseInt);
 
+  if (rates || mats) {
+    flags.push(`--rates`);
+  }
   if (rates && mats) {
-    flags.push(`--rates:${rates * mats}`);
+    flags.push(`--output:${rates * mats}`);
   } else if (rates) {
-    flags.push(`--rates:${rates}`);
+    flags.push(`--output:${rates}`);
   } else if (mats) {
-    flags.push(`--rates:${mats}`);
+    flags.push(`--output:${mats}`);
   }
 
   const recipe = {

@@ -1,4 +1,4 @@
-import { parse_flag, find_flag, get_tier_name, calculate_rates } from "./util.js";
+import { parse_flag, find_flag, get_tier_name, calculate_rates, get_rate_amount } from "./util.js";
 
 export function generate_table(outputs, flags) {
   // Initialize lengths for each column
@@ -33,7 +33,7 @@ export function generate_table(outputs, flags) {
 
     row.amount = 1;
     if (rates_flag) {
-      row.rates = calculate_rates(row, rates_flag);
+      row.rates = calculate_rates(row, get_rate_amount(flags));
       rates_length = Math.max(row.rates.toString().length, rates_length);
     }
   });

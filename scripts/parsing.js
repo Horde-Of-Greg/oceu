@@ -39,14 +39,11 @@ export function parse_input(input) {
 
     check_recipe(json);
     return json;
-  } catch {}
+  } catch { }
 
   input = input.split(" ");
 
   const flags = input.filter((value) => value != "-" && value.startsWith("--"));
-  if (flags.includes("--rates")){
-    flags[flags.indexOf("--rates")] = "--rates:1"
-  }
 
   input = input
     .filter((value) => !value.startsWith("--"))
