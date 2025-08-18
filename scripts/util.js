@@ -98,15 +98,7 @@ export function get_ratios(numbers) {
 }
 
 export function get_downclocks(parallel) {
-  if (parallel < 4) return 0;
-  if (parallel < 16) return 1;
-  if (parallel < 64) return 2;
-  if (parallel < 256) return 3;
-  return 4; // parallel >= 256
+	return Math.floor(Math.log2(parallel));
 }
 
-export function get_rate_amount(flags) {
-  const input = parse_flag(flags, "--input") || 1;
-  const output = parse_flag(flags, "--output") || 1;
-  return output / input;
-}
+

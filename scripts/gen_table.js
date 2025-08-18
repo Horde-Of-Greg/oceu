@@ -8,10 +8,13 @@ export function generate_table(outputs, flags) {
     parallel_length = 7,
     chance_length = 5,
     rates_length = 6;
+  input_length = 6;
 
   const needs_chance = outputs[0].chance,
     needs_parallel = outputs[0].parallel,
     rates_flag = find_flag(flags, "--rates");
+  input_flag = parse_flag(flags, "--input");
+  output_flag = parse_flag(flags, "--output");
 
   // Calculate maximum lengths for each column for padding
   outputs.forEach((row) => {
@@ -33,7 +36,11 @@ export function generate_table(outputs, flags) {
 
     row.amount = 1;
     if (rates_flag) {
-      row.rates = calculate_rates(row, get_rate_amount(flags));
+      if (input_flag) {
+        row.input_rates = calculate_rates(row, input_flag);
+        input_length = Math.max(row.input_rates.toString().length, input_length);
+      }
+      row.rates = calculate_rates(row, output_flag || 1);
       rates_length = Math.max(row.rates.toString().length, rates_length);
     }
   });
@@ -55,6 +62,9 @@ export function generate_table(outputs, flags) {
       }
       if (needs_parallel) {
         entry += generate_entry(row.parallel, "x", separator, parallel_length);
+      }
+      if (input_flag) {
+        entry += generate_entry(row.input_rates, "", separator, input_length);
       }
       if (rates_flag) {
         entry += generate_entry(row.rates, "", separator, rates_length);
@@ -80,7 +90,10 @@ export function generate_table(outputs, flags) {
   if (needs_parallel) {
     header += generate_entry("Parallel", "", separator, parallel_length);
   }
-  if (rates_flag) {
+  if (input_flag) {
+    header += generate_entry("Input", "", separator, input_length);
+    header += generate_entry("Output", "", separator, rates_length);
+  } else if (rates_flag) {
     header += generate_entry("Rates", "", separator, rates_length);
   }
   header += generate_entry("Tier", "", "", tier_length);
@@ -99,10 +112,15 @@ export function generate_table(outputs, flags) {
     header += "─".repeat(parallel_length + 3);
     header += "┼";
   }
+  if (input_flag) {
+    header += "─".repeat(input_length + 2);
+    header += "┼";
+  }
   if (rates_flag) {
     header += "─".repeat(rates_length + 2);
     header += "┼";
   }
+
 
   header += "─".repeat(5);
   header += "\n";
