@@ -56,15 +56,15 @@ function calculate_overclock(recipe, voltage) {
     output.chance = Math.min(100, recipe.base_chance * Math.pow(2, doubling_count));
 
   } else {
-    let effective_oc = Math.floor(Math.log(effective_time) / Math.log(2));
     if (recipe.flags.includes("--lcr")) {
-      overclock_tiers = Math.min(effective_oc, overclock_tiers);
-      effective_eu = Math.floor(base_eu * Math.pow(4, overclock_tiers));
+      let effective_oc = Math.min(overclock_tiers, Math.floor(Math.log(effective_time) / Math.log(4)));
+      effective_eu = Math.floor(base_eu * Math.pow(4, effective_oc));
       effective_time = Math.max(
         1,
         Math.floor(recipe.base_duration / Math.pow(4, overclock_tiers)),
       );
     } else {
+      let effective_oc = Math.floor(Math.log(effective_time) / Math.log(2));
       effective_eu = Math.floor(base_eu * Math.pow(4, overclock_tiers));
       if (recipe.flags.includes("--subtick") && overclock_tiers > effective_oc) {
         output.parallel = output.parallel * Math.pow(2, overclock_tiers - effective_oc)
