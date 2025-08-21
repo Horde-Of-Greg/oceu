@@ -15,9 +15,7 @@ export function check_recipe(recipe) {
   }
   if (recipe.parallel < 0) {
     throw new Error("Recipe parallel must be positive");
-  }
-  if (recipe.amperage < 0) {
-    throw new Error("Recipe amperage must be positive");
+  } if (recipe.amperage < 0) { throw new Error("Recipe amperage must be positive");
   }
 
   if (
@@ -49,27 +47,27 @@ export function parse_input(input) {
   let output = {};
 
   if (input[0] === "ebf") {
-    const oc_type = input[5] ? "ebf parallel" : "ebf";
+    const oc_type = (input[5] || flags.includes("--subtick")) ? "ebf parallel" : "ebf";
 
     output = {
       base_eu: Math.floor(parseInt(input[1])),
       base_duration: Math.floor(parse_duration(input[2])),
       base_recipe_heat: parseInt(input[3]),
       base_coil_heat: parseInt(input[4]),
-      base_parallel: parseInt(input[5] ?? 0),
+      base_parallel: parseInt(input[5] ?? 1),
       amperage: parseInt(input[6] ?? 1),
       flags: flags,
       oc_type: oc_type,
     };
   } else {
-    const oc_type = input[4] ? "parallel" : "regular";
+    const oc_type = (input[4] || flags.includes("--subtick")) ? "parallel" : "regular";
 
     output = {
       base_eu: Math.floor(parseInt(input[0])),
       base_duration: parse_duration(input[1]),
       base_chance: parseFloat(input[2] ?? 0),
       base_chance_bonus: parseFloat(input[3] ?? 0),
-      base_parallel: parseInt(input[4] ?? 0),
+      base_parallel: parseInt(input[4] ?? 1),
       amperage: parseInt(input[5] ?? 1),
       flags: flags,
       oc_type: oc_type,

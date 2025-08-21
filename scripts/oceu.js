@@ -26,6 +26,7 @@ function calculate_overclock(recipe, voltage) {
       recipe.base_parallel,
       Math.floor((recipe.amperage * get_eu_t(voltage)) / recipe.base_eu),
     );
+    console.log(parallel);
     base_eu = recipe.base_eu * parallel;
     // We first parallel by modifying `parallel` and `base_eu` before we oc
     output.parallel = parallel;
@@ -56,19 +57,17 @@ function calculate_overclock(recipe, voltage) {
     output.chance = Math.min(100, recipe.base_chance * Math.pow(2, doubling_count));
 
   } else {
+    let effective_oc;
     if (recipe.flags.includes("--lcr")) {
-      let effective_oc = Math.min(overclock_tiers, Math.floor(Math.log(effective_time) / Math.log(4)));
+      effective_oc = Math.min(overclock_tiers, Math.floor(Math.log(effective_time) / Math.log(4)));
       effective_eu = Math.floor(base_eu * Math.pow(4, effective_oc));
       effective_time = Math.max(
         1,
         Math.floor(recipe.base_duration / Math.pow(4, overclock_tiers)),
       );
     } else {
-      let effective_oc = Math.floor(Math.log(effective_time) / Math.log(2));
+      effective_oc = Math.floor(Math.log(effective_time) / Math.log(2));
       effective_eu = Math.floor(base_eu * Math.pow(4, overclock_tiers));
-      if (recipe.flags.includes("--subtick") && overclock_tiers > effective_oc) {
-        output.parallel = output.parallel * Math.pow(2, overclock_tiers - effective_oc)
-      }
       effective_time = Math.max(
         1,
         Math.floor(recipe.base_duration / Math.pow(2, overclock_tiers)),
@@ -78,6 +77,9 @@ function calculate_overclock(recipe, voltage) {
       100,
       recipe.base_chance + recipe.base_chance_bonus * overclock_tiers,
     );
+    if (recipe.flags.includes("--subtick") && overclock_tiers > effective_oc) {
+      output.parallel = output.parallel * Math.pow(2, overclock_tiers - effective_oc)
+    }
   }
 
   if (recipe.flags.includes("--config")) {
