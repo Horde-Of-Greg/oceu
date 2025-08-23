@@ -19,9 +19,9 @@ function calculate_overclock(recipe, voltage) {
   };
   // Null out the fields we don't use
   let base_eu = recipe.base_eu;
-  const is_ce = recipe.flags.includes("--ce");
+  const is_ce = find_flag(recipe.flags, "--ce");
 
-  if (recipe.oc_type.includes("parallel")) {
+  if (find_flag(recipe.flags, "--parallel")) {
     const parallel = Math.min(
       recipe.base_parallel,
       Math.floor((recipe.amperage * get_eu_t(voltage)) / recipe.base_eu),
@@ -47,7 +47,7 @@ function calculate_overclock(recipe, voltage) {
     effective_eu = Math.floor(base_eu * Math.pow(4, overclock_count));
 
     let doubling_count;
-    if (recipe.flags.includes("--macerator")) {
+    if (find_flag(recipe.flags, "--macerator")) {
       // Macerators in CE only start scaling in chanced outputs after MV
       doubling_count = voltage >= get_voltage_from_name("MV") ? overclock_tiers - 1 : overclock_tiers;
     } else {
@@ -58,7 +58,7 @@ function calculate_overclock(recipe, voltage) {
 
   } else {
     let effective_oc;
-    if (recipe.flags.includes("--lcr")) {
+    if (find_flag(recipe.flags, "--lcr")) {
       effective_oc = Math.min(overclock_tiers, Math.floor(Math.log(effective_time) / Math.log(4)));
       effective_eu = Math.floor(base_eu * Math.pow(4, effective_oc));
       effective_time = Math.max(
@@ -66,8 +66,15 @@ function calculate_overclock(recipe, voltage) {
         Math.floor(recipe.base_duration / Math.pow(4, overclock_tiers)),
       );
     } else {
-      effective_oc = Math.floor(Math.log(effective_time) / Math.log(2));
-      effective_eu = Math.floor(base_eu * Math.pow(4, overclock_tiers));
+      effective_oc = Math.min(overclock_tiers, Math.floor(Math.log(effective_time) / Math.log(4)));
+      
+      // Don't oc past tickcap if the user is not using parallel hatches 
+      if (find_flag(recipe.flags, "--parallel")) {
+        effective_eu = Math.floor(base_eu * Math.pow(4, overclock_tiers));
+      } else {
+        effective_eu = Math.floor(base_eu * Math.pow(4, effective_oc));
+      }
+
       effective_time = Math.max(
         1,
         Math.floor(recipe.base_duration / Math.pow(2, overclock_tiers)),
@@ -77,12 +84,12 @@ function calculate_overclock(recipe, voltage) {
       100,
       recipe.base_chance + recipe.base_chance_bonus * overclock_tiers,
     );
-    if (recipe.flags.includes("--subtick") && overclock_tiers > effective_oc) {
+    if (find_flag(recipe.flags, "--subtick") && overclock_tiers > effective_oc) {
       output.parallel = output.parallel * Math.pow(2, overclock_tiers - effective_oc)
     }
   }
 
-  if (recipe.flags.includes("--config")) {
+  if (find_flag(recipe.flags, "--config")) {
     effective_time = Math.floor(effective_time * 0.9);
   }
 
@@ -103,13 +110,13 @@ function calculate_ebf_overclock(recipe, voltage) {
   };
 
   // EBF behaviour in CE is identical to singleblocks
-  if (recipe.flags.includes("--ce")) {
+  if (find_flag(recipe.flags, "--ce")) {
     return calculate_overclock(recipe, voltage);
   }
 
   let base_eu = recipe.base_eu;
 
-  if (recipe.oc_type.includes("parallel")) {
+  if (find_flag(recipe.flags, "--parallel")) {
     parallel = Math.min(
       recipe.base_parallel,
       Math.floor((recipe.amperage * get_eu_t(voltage)) / recipe.base_eu),
@@ -159,7 +166,7 @@ function calculate_ebf_overclock(recipe, voltage) {
     Math.pow(2, Math.max(0, overclock_tiers - ebf_perfect_overclocks));
   //We first spend our ocs on perfect oc, if we have ocs left, then we do regular oc
 
-  if (recipe.flags.includes("--config")) {
+  if (find_flag(recipe.flags, "--config")) {
     effective_time = Math.floor(effective_time * 0.9);
   }
 
@@ -172,7 +179,7 @@ function calculate_ebf_overclock(recipe, voltage) {
 export function run_recipe(recipe) {
   const eu_tier = get_voltage_tier(
     recipe.base_eu,
-    recipe.flags.includes("--ce"),
+    find_flag(recipe.flags, "--ce")
   );
   const output = [];
   const voltage_flag = parse_flag(recipe.flags, "--filter");
@@ -186,52 +193,47 @@ export function run_recipe(recipe) {
     }
   }
 
-  switch (recipe.oc_type) {
-    case "regular":
-    case "parallel":
-      if (voltage != -1) {
-        output.push(calculate_overclock(recipe, voltage));
-        break;
-      }
+  if (find_flag(recipe.flags, "--ebf")) {
 
-      if (recipe.flags.includes("--extra")) {
-        if (recipe.flags.includes("--ce")) {
-          throw new Error(
-            "Nomifactory CE does not have UEV+ Voltage, voltages in Nomifactory caps to MAX (sames as UHV)",
-          );
-        }
-        for (let index = eu_tier; index <= 14; index++) {
-          output.push(calculate_overclock(recipe, index));
-        }
-      } else {
-        for (let index = eu_tier; index <= 9; index++) {
-          output.push(calculate_overclock(recipe, index));
-        }
-      }
-      break;
+    if (voltage != -1) {
+      output.push(calculate_ebf_overclock(recipe, voltage));
+      return;
+    }
 
-    case "ebf":
-    case "ebf parallel":
-      if (voltage != -1) {
-        output.push(calculate_ebf_overclock(recipe, voltage));
-        break;
+    if (find_flag(recipe.flags, "--extra")) {
+      if (find_flag(recipe.flags, "--ce")) {
+        throw new Error(
+          "Nomifactory CE does not have UEV+ Voltage, voltages in Nomifactory caps to MAX (sames as UHV)",
+        );
       }
+      for (let index = eu_tier; index <= 14; index++) {
+        output.push(calculate_ebf_overclock(recipe, index));
+      }
+    } else {
+      for (let index = eu_tier; index <= 9; index++) {
+        output.push(calculate_ebf_overclock(recipe, index));
+      }
+    }
+  } else {
+    if (voltage != -1) {
+      output.push(calculate_overclock(recipe, voltage));
+      return;
+    }
 
-      if (recipe.flags.includes("--extra")) {
-        if (recipe.flags.includes("--ce")) {
-          throw new Error(
-            "Nomifactory CE does not have UEV+ Voltage, voltages in Nomifactory caps to MAX (sames as UHV)",
-          );
-        }
-        for (let index = eu_tier; index <= 14; index++) {
-          output.push(calculate_ebf_overclock(recipe, index));
-        }
-      } else {
-        for (let index = eu_tier; index <= 9; index++) {
-          output.push(calculate_ebf_overclock(recipe, index));
-        }
+    if (find_flag(recipe.flags, "--extra")) {
+      if (find_flag(recipe.flags, "--ce")) {
+        throw new Error(
+          "Nomifactory CE does not have UEV+ Voltage, voltages in Nomifactory caps to MAX (sames as UHV)",
+        );
       }
-      break;
+      for (let index = eu_tier; index <= 14; index++) {
+        output.push(calculate_overclock(recipe, index));
+      }
+    } else {
+      for (let index = eu_tier; index <= 9; index++) {
+        output.push(calculate_overclock(recipe, index));
+      }
+    }
   }
 
   return [recipe, output];

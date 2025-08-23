@@ -15,7 +15,8 @@ export function check_recipe(recipe) {
   }
   if (recipe.parallel < 0) {
     throw new Error("Recipe parallel must be positive");
-  } if (recipe.amperage < 0) { throw new Error("Recipe amperage must be positive");
+  } if (recipe.amperage < 0) {
+    throw new Error("Recipe amperage must be positive");
   }
 
   if (
@@ -39,27 +40,30 @@ export function parse_input(input) {
     .filter((value) => !value.startsWith("--"))
     .map((value) => (value != "-" ? value : null));
 
-  if (find_flag(flags, "--input") || find_flag(flags,"--output")) {
+  if (find_flag(flags, "--input") || find_flag(flags, "--output")) {
     flags.push("--rates");
   }
 
   let output = {};
 
   if (input[0] === "ebf") {
-    const oc_type = (input[5] || flags.includes("--subtick")) ? "ebf parallel" : "ebf";
+    flags.push("--ebf");
+    if (input[5] || flags.includes("--subtick")) {
+      flags.push("--parallel")
+    }
 
     output = {
       base_eu: Math.floor(parseInt(input[1])),
       base_duration: Math.floor(parse_duration(input[2])),
       base_recipe_heat: parseInt(input[3]),
       base_coil_heat: parseInt(input[4]),
-      base_parallel: parseInt(input[5] ?? 1),
-      amperage: parseInt(input[6] ?? 1),
+      base_parallel: parseInt(input[5] ?? 1), amperage: parseInt(input[6] ?? 1),
       flags: flags,
-      oc_type: oc_type,
     };
   } else {
-    const oc_type = (input[4] || flags.includes("--subtick")) ? "parallel" : "regular";
+    if ((input[4] || flags.includes("--subtick"))) {
+      flags.push("--parallel")
+    }
 
     output = {
       base_eu: Math.floor(parseInt(input[0])),
@@ -69,10 +73,10 @@ export function parse_input(input) {
       base_parallel: parseInt(input[4] ?? 1),
       amperage: parseInt(input[5] ?? 1),
       flags: flags,
-      oc_type: oc_type,
     };
   }
 
   check_recipe(output);
+
   return output;
 }
