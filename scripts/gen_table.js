@@ -12,9 +12,9 @@ export function generate_table(outputs, flags) {
 
   const needs_chance = outputs[0].chance,
     needs_parallel = outputs[0].parallel,
-    rates_flag = find_flag(flags, "--rates");
-  input_flag = parse_flag(flags, "--input");
-  output_flag = parse_flag(flags, "--output");
+    rates_flag = find_flag(flags, "--rates"),
+    input_flag = parse_flag(flags, "--input"),
+    output_flag = parse_flag(flags, "--output");
 
   // Calculate maximum lengths for each column for padding
   outputs.forEach((row) => {

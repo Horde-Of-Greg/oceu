@@ -1,4 +1,4 @@
-import { parse_duration } from "./util.js";
+import { find_flag, parse_duration } from "./util.js";
 export function check_recipe(recipe) {
   if (recipe.base_eu < 0) {
     throw new Error("EU cost must be positive");
@@ -20,8 +20,7 @@ export function check_recipe(recipe) {
 
   if (
     (recipe.base_recipe_heat || recipe.base_coil_heat) &&
-    !(recipe.base_recipe_heat && recipe.base_coil_heat)
-  ) {
+    !(recipe.base_recipe_heat && recipe.base_coil_heat)) {
     throw new Error(
       "Both recipe temperature and coil temperature must be provided",
     );
@@ -40,7 +39,7 @@ export function parse_input(input) {
     .filter((value) => !value.startsWith("--"))
     .map((value) => (value != "-" ? value : null));
 
-  if (flags.includes("--input") || flags.includes("--output")) {
+  if (find_flag(flags, "--input") || find_flag(flags,"--output")) {
     flags.push("--rates");
   }
 
