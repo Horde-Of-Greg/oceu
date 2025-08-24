@@ -38,10 +38,10 @@ export function generate_table(outputs, flags) {
     row.amount = 1;
     if (rates_flag) {
       if (input_flag) {
-        row.input_rates = calculate_rates(row, input_flag) * count;
+        row.input_rates = calculate_rates(row, input_flag) * machine_count;
         input_length = Math.max(row.input_rates.toString().length, input_length);
       }
-      row.rates = calculate_rates(row, output_flag || 1) * count;
+      row.rates = calculate_rates(row, output_flag || 1) * machine_count;
       rates_length = Math.max(row.rates.toString().length, rates_length);
     }
   });
