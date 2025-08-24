@@ -87,12 +87,7 @@ function calculate_overclock(recipe, voltage) {
     effective_time = Math.floor(effective_time * 0.9);
   }
 
-  if (find_flag(recipe.flags, "--volcanus")) {
-    effective_time = Math.floor(effective_time * 2.2);
-    effective_eu = Math.floor(effective_time * 0.9);
-  }
-
-  output.tier = voltage;
+    output.tier = voltage;
   output.eu = effective_eu;
   output.time = effective_time;
   output.chance_bonus = recipe.base_chance_bonus;
@@ -154,10 +149,11 @@ function calculate_ebf_overclock(recipe, voltage) {
   );
   // Recalculate the voltage tier we are running considering the coil heat increase from oc
 
-  const effective_eu =
+  let effective_eu =
     base_eu *
     ebf_eu_discount(recipe.base_recipe_heat, effective_heat) *
     Math.pow(4, overclock_tiers);
+
 
   let effective_time =
     recipe.base_duration /
@@ -167,6 +163,11 @@ function calculate_ebf_overclock(recipe, voltage) {
 
   if (find_flag(recipe.flags, "--config")) {
     effective_time = Math.floor(effective_time * 0.9);
+  }
+
+  if (find_flag(recipe.flags, "--volcanus")) {
+    effective_time = Math.floor(effective_time / 2.2);
+    effective_eu = Math.floor(effective_eu * 0.9);
   }
 
   output.eu = Math.floor(effective_eu);
