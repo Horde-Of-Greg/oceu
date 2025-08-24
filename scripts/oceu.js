@@ -87,6 +87,11 @@ function calculate_overclock(recipe, voltage) {
     effective_time = Math.floor(effective_time * 0.9);
   }
 
+  if (find_flag(recipe.flags, "--volcanus")) {
+    effective_time = Math.floor(effective_time * 2.2);
+    effective_eu = Math.floor(effective_time * 0.9);
+  }
+
   output.tier = voltage;
   output.eu = effective_eu;
   output.time = effective_time;
