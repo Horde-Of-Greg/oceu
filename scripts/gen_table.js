@@ -15,6 +15,7 @@ export function generate_table(outputs, flags) {
     rates_flag = find_flag(flags, "--rates"),
     input_flag = parse_flag(flags, "--input"),
     output_flag = parse_flag(flags, "--output");
+    machine_count = parse_flag(flags, "--count");
 
   // Calculate maximum lengths for each column for padding
   outputs.forEach((row) => {
@@ -37,10 +38,10 @@ export function generate_table(outputs, flags) {
     row.amount = 1;
     if (rates_flag) {
       if (input_flag) {
-        row.input_rates = calculate_rates(row, input_flag);
+        row.input_rates = calculate_rates(row, input_flag) * count;
         input_length = Math.max(row.input_rates.toString().length, input_length);
       }
-      row.rates = calculate_rates(row, output_flag || 1);
+      row.rates = calculate_rates(row, output_flag || 1) * count;
       rates_length = Math.max(row.rates.toString().length, rates_length);
     }
   });

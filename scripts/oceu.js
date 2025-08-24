@@ -1,14 +1,9 @@
 import {
   get_eu_t,
-  voltage_tiers,
-  get_tier_name,
   get_voltage_tier,
   get_voltage_from_name,
   find_flag,
   parse_flag,
-  parse_duration,
-  get_ratios,
-  get_downclocks,
 } from "./util.js";
 
 function calculate_overclock(recipe, voltage) {
@@ -66,8 +61,7 @@ function calculate_overclock(recipe, voltage) {
         Math.floor(recipe.base_duration / Math.pow(4, overclock_tiers)),
       );
     } else {
-      effective_oc = Math.min(overclock_tiers, Math.floor(Math.log(effective_time) / Math.log(4)));
-      
+      effective_oc = Math.min(overclock_tiers, Math.floor(Math.log(effective_time) / Math.log(2)));
       // Don't oc past tickcap if the user is not using parallel hatches 
       if (find_flag(recipe.flags, "--parallel")) {
         effective_eu = Math.floor(base_eu * Math.pow(4, overclock_tiers));
