@@ -54,14 +54,15 @@ function calculate_overclock(recipe, voltage) {
   } else {
     let effective_oc;
     if (find_flag(recipe.flags, "--lcr")) {
-      effective_oc = Math.min(overclock_tiers, Math.floor(Math.log(effective_time) / Math.log(4)));
+      effective_oc = Math.min(overclock_tiers, Math.ceil(Math.log(effective_time) / Math.log(4)));
+      console.log(overclock_tiers, effective_oc)
       effective_eu = Math.floor(base_eu * Math.pow(4, effective_oc));
       effective_time = Math.max(
         1,
         Math.floor(recipe.base_duration / Math.pow(4, overclock_tiers)),
       );
     } else {
-      effective_oc = Math.min(overclock_tiers, Math.floor(Math.log(effective_time) / Math.log(2)));
+      effective_oc = Math.min(overclock_tiers, Math.ceil(Math.log(effective_time) / Math.log(2)));
       // Don't oc past tickcap if the user is not using parallel hatches 
       if (find_flag(recipe.flags, "--parallel")) {
         effective_eu = Math.floor(base_eu * Math.pow(4, overclock_tiers));
