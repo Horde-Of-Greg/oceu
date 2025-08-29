@@ -60,6 +60,13 @@ export function parse_input(input) {
       base_parallel: parseInt(input[5] ?? 1), amperage: parseInt(input[6] ?? 1),
       flags: flags,
     };
+
+    if (flags.includes("--volcanus")){
+      output.flags.push("--time:0.45454545")
+      output.flags.push("--eu:0.9")
+      output.flags.push("--parallel")
+      output.base_parallel = 8;
+    }
   } else {
     if ((input[4] || flags.includes("--subtick"))) {
       flags.push("--parallel")
@@ -74,6 +81,9 @@ export function parse_input(input) {
       amperage: parseInt(input[5] ?? 1),
       flags: flags,
     };
+
+
+
   }
 
   check_recipe(output);

@@ -88,7 +88,16 @@ function calculate_overclock(recipe, voltage) {
     effective_time = Math.floor(effective_time * 0.9);
   }
 
-    output.tier = voltage;
+  const time_multiplier = parseFloat(parse_flag(recipe.flags, "--time"));
+  const eu_multiplier = parseFloat(parse_flag(recipe.flags, "--eu"));
+  if (time_multiplier) {
+    effective_time = Math.floor(effective_time * time_multiplier);
+  }
+  if (eu_multiplier) {
+    effective_eu = Math.floor(effective_eu * eu_multiplier);
+  }
+
+  output.tier = voltage;
   output.eu = effective_eu;
   output.time = effective_time;
   output.chance_bonus = recipe.base_chance_bonus;
@@ -166,9 +175,13 @@ function calculate_ebf_overclock(recipe, voltage) {
     effective_time = Math.floor(effective_time * 0.9);
   }
 
-  if (find_flag(recipe.flags, "--volcanus")) {
-    effective_time = Math.floor(effective_time / 2.2);
-    effective_eu = Math.floor(effective_eu * 0.9);
+  const time_multiplier = parseFloat(parse_flag(recipe.flags, "--time"));
+  const eu_multiplier = parseFloat(parse_flag(recipe.flags, "--eu"));
+  if (time_multiplier) {
+    effective_time = Math.floor(effective_time * time_multiplier);
+  }
+  if (eu_multiplier) {
+    effective_eu = Math.floor(effective_eu * eu_multiplier);
   }
 
   output.eu = Math.floor(effective_eu);
