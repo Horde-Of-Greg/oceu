@@ -1,6 +1,9 @@
-import { parse_flag, find_flag, get_tier_name, calculate_rates, get_rate_amount } from "./util.js";
+import { parse_flag, find_flag, get_tier_name, calculate_rates} from "./util.js";
 
 export function generate_table(outputs, flags) {
+  if(flags.includes("--balls")){
+    return "Balls";
+  }
   // Initialize lengths for each column
   let eu_length = 3,
     time_length = 3,
