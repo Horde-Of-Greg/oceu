@@ -67,6 +67,7 @@ export function parse_input(input) {
       output.flags.push("--parallel")
       output.base_parallel = 8;
     }
+
   } else {
     if ((input[4] || flags.includes("--subtick"))) {
       flags.push("--parallel")
@@ -82,8 +83,11 @@ export function parse_input(input) {
       flags: flags,
     };
 
-
-
+    if (flags.includes("--cryo-freezer")){
+      output.flags.push("--time:0.5")
+      output.flags.push("--parallel")
+      output.base_parallel = 4;
+    }
   }
 
   check_recipe(output);
