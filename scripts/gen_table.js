@@ -1,7 +1,7 @@
-import { parse_flag, find_flag, get_tier_name, calculate_rates} from "./util.js";
+import { parse_flag, find_flag, get_tier_name, calculate_rates } from "./util.js";
 
 export function generate_table(outputs, flags) {
-  if(flags.includes("--balls")){
+  if (flags.includes("--balls")) {
     return "Balls";
   }
   // Initialize lengths for each column
@@ -18,11 +18,11 @@ export function generate_table(outputs, flags) {
     rates_flag = find_flag(flags, "--rates"),
     input_flag = parse_flag(flags, "--input"),
     output_flag = parse_flag(flags, "--output");
-    machine_count = parse_flag(flags, "--count") || 1;
+  machine_count = parse_flag(flags, "--count") || 1;
 
   // Calculate maximum lengths for each column for padding
   outputs.forEach((row) => {
-    eu_length = Math.max(row.eu.toString().length, eu_length);
+    eu_length = Math.max((row.eu * machine_count).toString().length, eu_length);
     time_length = Math.max(
       (row.time / 20).toString().length,
       row.time.toString().length,
@@ -54,7 +54,7 @@ export function generate_table(outputs, flags) {
 
   let table = outputs
     .map((row) => {
-      let entry = generate_entry(row.eu, " EU/t", separator, eu_length);
+      let entry = generate_entry(row.eu * machine_count, " EU/t", separator, eu_length);
       // Use ticks if time < 1s
       if (find_flag(flags, "--tick") || row.time < 20) {
         entry += generate_entry(row.time, "t", separator, time_length);
