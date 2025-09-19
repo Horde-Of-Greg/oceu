@@ -29,10 +29,11 @@ export function check_recipe(recipe) {
 }
 
 export function parse_input(input) {
-  input = input.split(" ");
-  if (input[0] === "--auto"){
-    return JSON.parse(input.slice(1))
+  if (input.includes() === "--auto") {
+    return JSON.parse(input)
   }
+
+  input = input.split(" ");
 
   if (input.length < 2) {
     throw new Error("Too few arguments: Must have at least 2");
@@ -48,8 +49,8 @@ export function parse_input(input) {
     flags.push("--rates");
   }
 
-  for (let i = 0; i < voltage_tiers.length; i++){
-    if (find_flag(flags, `--${voltage_tiers[i].name.toLowerCase()}`)){
+  for (let i = 0; i < voltage_tiers.length; i++) {
+    if (find_flag(flags, `--${voltage_tiers[i].name.toLowerCase()}`)) {
       flags.push(`--voltage:${voltage_tiers[i].name.toLowerCase()}`)
     }
   }
@@ -71,7 +72,7 @@ export function parse_input(input) {
       flags: flags,
     };
 
-    if (flags.includes("--volcanus")){
+    if (flags.includes("--volcanus")) {
       output.flags.push("--time:0.45454545")
       output.flags.push("--eu:0.9")
       output.flags.push("--parallel")
@@ -93,7 +94,7 @@ export function parse_input(input) {
       flags: flags,
     };
 
-    if (flags.includes("--cryo-freezer")){
+    if (flags.includes("--cryo-freezer")) {
       output.flags.push("--time:0.5")
       output.flags.push("--parallel")
       output.base_parallel = 4;
