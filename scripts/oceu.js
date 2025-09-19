@@ -12,7 +12,6 @@ function calculate_overclock(recipe, voltage) {
     chance: null,
     chance_bonus: null,
   };
-  // Null out the fields we don't use
   let base_eu = recipe.base_eu;
   const is_ce = find_flag(recipe.flags, "--ce");
 
@@ -23,7 +22,6 @@ function calculate_overclock(recipe, voltage) {
     );
     console.log(parallel);
     base_eu = recipe.base_eu * parallel;
-    // We first parallel by modifying `parallel` and `base_eu` before we oc
     output.parallel = parallel;
   }
 
@@ -133,7 +131,6 @@ function calculate_ebf_overclock(recipe, voltage) {
 
   function ebf_eu_discount(recipeHeat, effectiveHeat) {
     return Math.pow(0.95, Math.floor((effectiveHeat - recipeHeat) / 900));
-    // Apply a 95% discount every 900K in coil temp
   }
 
   let eu_tier = get_voltage_tier(

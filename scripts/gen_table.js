@@ -4,6 +4,10 @@ export function generate_table(outputs, flags) {
   if (flags.includes("--balls")) {
     return "Balls";
   }
+  if (find_flag(flags, "--auto")) {
+    return outputs;
+  }
+
   // Initialize lengths for each column
   let eu_length = 3,
     time_length = 3,

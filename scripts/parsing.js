@@ -1,4 +1,4 @@
-import { find_flag, parse_duration } from "./util.js";
+import { find_flag, parse_duration, voltage_tiers } from "./util.js";
 export function check_recipe(recipe) {
   if (recipe.base_eu < 0) {
     throw new Error("EU cost must be positive");
@@ -30,6 +30,10 @@ export function check_recipe(recipe) {
 
 export function parse_input(input) {
   input = input.split(" ");
+  if (input[0] === "--auto"){
+    return JSON.parse(input[1])
+  }
+
   if (input.length < 2) {
     throw new Error("Too few arguments: Must have at least 2");
   }
@@ -42,6 +46,12 @@ export function parse_input(input) {
 
   if (find_flag(flags, "--input") || find_flag(flags, "--output")) {
     flags.push("--rates");
+  }
+
+  for (let i = 0; i < voltage_tiers.length; i++){
+    if (find_flag(flags, `--${voltage_tiers[i].name.toLowerCase()}`)){
+      flags.push(`--voltage:${voltage_tiers[i].name.toLowerCase()}`)
+    }
   }
 
   let output = {};
