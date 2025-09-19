@@ -31,7 +31,7 @@ export function check_recipe(recipe) {
 export function parse_input(input) {
   input = input.split(" ");
   if (input[0] === "--auto"){
-    return JSON.parse(input[1])
+    return JSON.parse(input.slice(1))
   }
 
   if (input.length < 2) {
