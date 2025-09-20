@@ -69,7 +69,6 @@ Stores the results of overclocking, unused fields are left null. `tier` is a tie
 : Returns: `Array [Output]`: the computed result sorted by voltage tier.
 
 
-
 `POST /api/generate_table`: Generates a string table given a array of computed overclock results.
 : Parameters: 
 : - `flags: Array [String]`: the input flags required, see [flags](#Flags).
