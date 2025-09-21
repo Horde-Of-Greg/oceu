@@ -185,10 +185,12 @@ function run_recipe(recipe) {
     recipe.base_eu,
     util.find_flag(recipe.flags, "--ce")
   );
+
   const output = [];
-  const voltage_flag = util.parse_flag(recipe.flags, "--filter");
+  const voltage_flag = util.parse_flag(recipe.flags, "--voltage");
 
   let voltage = -1;
+
 
   if (voltage_flag) {
     voltage = util.get_voltage_from_name(voltage_flag);
@@ -198,10 +200,9 @@ function run_recipe(recipe) {
   }
 
   if (util.find_flag(recipe.flags, "--ebf")) {
-
     if (voltage != -1) {
       output.push(calculate_ebf_overclock(recipe, voltage));
-      return;
+      return output ;
     }
 
     if (util.find_flag(recipe.flags, "--extra")) {
@@ -221,7 +222,7 @@ function run_recipe(recipe) {
   } else {
     if (voltage != -1) {
       output.push(calculate_overclock(recipe, voltage));
-      return;
+      return output ;
     }
 
     if (util.find_flag(recipe.flags, "--extra")) {
