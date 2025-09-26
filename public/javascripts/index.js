@@ -128,7 +128,7 @@ function read_recipe() {
   const chanceBonus = parse(ELEMENT_IDS.chance_bonus);
   const recipeHeat = parse(ELEMENT_IDS.recipe_heat, parseInt);
   const coilHeat = parse(ELEMENT_IDS.coil_heat, parseInt);
-  const parallel = parse(ELEMENT_IDS.parallel, parseInt);
+  let parallel = parse(ELEMENT_IDS.parallel, parseInt);
   const voltage = $(ELEMENT_IDS.voltage).val();
 
   let flags = [];
@@ -141,7 +141,10 @@ function read_recipe() {
   if (recipeHeat && coilHeat) flags.push("--ebf");
   if (parallel) flags.push("--parallel");
   if ($(ELEMENT_IDS.volcanus).is(":checked")) {
-    flags.push("--volcanus");
+    flags.push("--time:0.4545454545");
+    flags.push("--eu:0.9");
+    flags.push("--parallel");
+    parallel = 8;
   }
   if ($(ELEMENT_IDS.subtick).is(":checked")){
     flags.push("--subtick");
