@@ -67,7 +67,8 @@ function parse_input(input) {
       base_duration: Math.floor(util.parse_duration(input[2])),
       base_recipe_heat: parseInt(input[3]),
       base_coil_heat: parseInt(input[4]),
-      base_parallel: parseInt(input[5] || 1), amperage: parseInt(input[6] || 1),
+      base_parallel: parseInt(input[5] || 1),
+      amperage: parseInt(input[6] || 1),
       flags: flags,
     };
 
@@ -100,9 +101,10 @@ function parse_input(input) {
     }
   }
 
+
   check_recipe(output);
 
   return output;
 }
 
-module.exports = {parse_input} 
+module.exports = { parse_input } 

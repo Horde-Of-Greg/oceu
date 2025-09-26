@@ -1,6 +1,5 @@
 let recipe_storage = [];
 
-
 function parse_flag(flags, flag) {
   const flag_data = find_flag(flags, flag);
   if (!flag_data) {
@@ -114,6 +113,8 @@ function read_recipe() {
     ce: "#ce",
     macerator_ce: "#macerator_ce",
     extra: "#extra",
+    subtick: "#subtick",
+    volcanus: "#volcanus",
   };
 
   const parse = (id, parser = parseFloat) => {
@@ -139,6 +140,13 @@ function read_recipe() {
   if ($(ELEMENT_IDS.macerator_ce).is(":checked")) flags.push("--macerator");
   if (recipeHeat && coilHeat) flags.push("--ebf");
   if (parallel) flags.push("--parallel");
+  if ($(ELEMENT_IDS.volcanus).is(":checked")) {
+    flags.push("--volcanus");
+  }
+  if ($(ELEMENT_IDS.subtick).is(":checked")){
+    flags.push("--subtick");
+    flags.push("--parallel");
+  }
 
   const rates = parse(ELEMENT_IDS.rates, parseInt);
   const mats = parse(ELEMENT_IDS.mats, parseInt);
@@ -165,6 +173,10 @@ function read_recipe() {
     flags: flags,
     amperage: 1,
   };
+
+  if (flags.includes("--parallel") && !recipe.base_parallel){
+    recipe.base_parallel = 1;
+  }
 
   return recipe;
 }
@@ -229,6 +241,12 @@ function update_result() {
       run_recipe(recipe).then(output => {
         generate_table_web(output, recipe)
       });
+    }
+
+    if ($("#recipe_heat").val() && $("#recipe_coil_heat").val()) {
+      $("#volcanus_checkbox").show();
+    } else {
+      $("#volcanus_checkbox").hide();
     }
   } catch (error) {
     const table = $("#output_table tbody");

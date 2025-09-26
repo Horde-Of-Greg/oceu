@@ -106,6 +106,14 @@
                         <input type="checkbox" class="form-check-input" id="extra" oninput="update_result()">
                         <label class="form-check-label" for="extra">Extra Tiers (UEV - MAX)</label>
                     </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="subtick" oninput="update_result()">
+                        <label class="form-check-label" for="subtick">Subtick Overclocking</label>
+                    </div>
+                    <div class="form-check" id="volcanus_checkbox" style="display: none">
+                        <input type="checkbox" class="form-check-input" id="volcanus" oninput="update_result()">
+                        <label class="form-check-label" for="volcanus">Volcanus</label>
+                    </div>
                 </div>
                 <div class="form-group row mb-2">
                     <label class="col-sm-4 col-form-label">Machine Count:</label>
@@ -126,17 +134,6 @@
                     </div>
                 </div>
             </form>
-            <div class="row">
-                <div class="col input-group">
-                    <button id="bulk_add_button" class="btn btn-outline-primary">Add Recipe</button>
-                    <input type="text" class="form-control" id="recipe_name" placeholder="Recipe Name"> </input>
-                </div>
-                <div class="col input-group">
-                    <button id="gen_report_button" class="btn btn-outline-secondary">Show More Data</button>
-                </div>
-
-            </div>
-
         </div>
 
 
@@ -148,12 +145,6 @@
                     </thead>
                     <tbody></tbody>
                 </table>
-                <div id="recipe_button_container" class="d-flex" style="display: none !important">
-                    <button id="select-all" class="btn btn-outline-primary m-2">Select All</button>
-                    <button id="delete-selected" class="btn btn-outline-danger m-2">Delete Selected</button>
-                    <button id="import-recipes" class="btn btn-outline-secondary m-2">Import</button>
-                    <button id="export-recipes" class="btn btn-outline-success m-2">Export</button>
-                </div>
                 <table id="recipe_table" class="table table-hover table-bordered">
                     <thead>
                         <tr></tr>
