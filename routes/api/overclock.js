@@ -52,6 +52,9 @@ function calculate_overclock(recipe, voltage) {
         1,
         Math.floor(recipe.base_duration / Math.pow(4, overclock_tiers)),
       );
+      if (util.find_flag(recipe.flags, "--subtick") && overclock_tiers > effective_oc) {
+        output.parallel = output.parallel * Math.pow(4, overclock_tiers - effective_oc)
+      }
     } else {
       effective_oc = Math.min(overclock_tiers, Math.floor(Math.log(effective_time) / Math.log(2)));
       // Don't oc past tickcap if the user is not using parallel hatches 
@@ -60,20 +63,19 @@ function calculate_overclock(recipe, voltage) {
       } else {
         effective_eu = Math.floor(base_eu * Math.pow(4, effective_oc));
       }
-
       effective_time = Math.max(
         1,
         Math.floor(recipe.base_duration / Math.pow(2, overclock_tiers)),
       );
+      if (util.find_flag(recipe.flags, "--subtick") && overclock_tiers > effective_oc) {
+        output.parallel = output.parallel * Math.pow(2, overclock_tiers - effective_oc)
+      }
     }
     output.chance = Math.min(
+
       100,
       recipe.base_chance + recipe.base_chance_bonus * overclock_tiers,
     );
-    console.log(effective_oc, overclock_tiers)
-    if (util.find_flag(recipe.flags, "--subtick") && overclock_tiers > effective_oc) {
-      output.parallel = output.parallel * Math.pow(2, overclock_tiers - effective_oc)
-    }
   }
 
   if (util.find_flag(recipe.flags, "--config")) {
@@ -203,7 +205,7 @@ function run_recipe(recipe) {
   if (util.find_flag(recipe.flags, "--ebf")) {
     if (voltage != -1) {
       output.push(calculate_ebf_overclock(recipe, voltage));
-      return output ;
+      return output;
     }
 
     if (util.find_flag(recipe.flags, "--extra")) {
@@ -223,7 +225,7 @@ function run_recipe(recipe) {
   } else {
     if (voltage != -1) {
       output.push(calculate_overclock(recipe, voltage));
-      return output ;
+      return output;
     }
 
     if (util.find_flag(recipe.flags, "--extra")) {
@@ -244,4 +246,4 @@ function run_recipe(recipe) {
 
   return output;
 }
-module.exports = {run_recipe}
+module.exports = { run_recipe }
