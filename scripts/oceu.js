@@ -7,6 +7,7 @@ import {
 } from "./util.js";
 
 function calculate_overclock(recipe, voltage) {
+
   const output = {
     parallel: null,
     chance: null,
@@ -20,7 +21,6 @@ function calculate_overclock(recipe, voltage) {
       recipe.base_parallel,
       Math.floor((recipe.amperage * get_eu_t(voltage)) / recipe.base_eu),
     );
-    console.log(parallel);
     base_eu = recipe.base_eu * parallel;
     output.parallel = parallel;
   }
@@ -53,7 +53,6 @@ function calculate_overclock(recipe, voltage) {
     let effective_oc;
     if (find_flag(recipe.flags, "--lcr")) {
       effective_oc = Math.min(overclock_tiers, Math.ceil(Math.log(effective_time) / Math.log(4)));
-      console.log(overclock_tiers, effective_oc)
       effective_eu = Math.floor(base_eu * Math.pow(4, effective_oc));
       effective_time = Math.max(
         1,

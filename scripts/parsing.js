@@ -29,8 +29,8 @@ export function check_recipe(recipe) {
 }
 
 export function parse_input(input) {
-  if (input.includes() === "--auto") {
-    return JSON.parse(input)
+  if (input.includes("--auto")){
+    return JSON.parse(input.replace("--auto", ""))
   }
 
   input = input.split(" ");
@@ -41,9 +41,7 @@ export function parse_input(input) {
 
   const flags = input.filter((value) => value != "-" && value.startsWith("--"));
 
-  input = input
-    .filter((value) => !value.startsWith("--"))
-    .map((value) => (value != "-" ? value : null));
+  input = input .filter((value) => !value.startsWith("--")) .map((value) => (value != "-" ? value : null));
 
   if (find_flag(flags, "--input") || find_flag(flags, "--output")) {
     flags.push("--rates");

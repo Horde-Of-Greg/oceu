@@ -5,7 +5,7 @@ export function generate_table(outputs, flags) {
     return "Balls";
   }
   if (find_flag(flags, "--auto")) {
-    return outputs;
+    return JSON.stringify(outputs);
   }
 
   // Initialize lengths for each column
