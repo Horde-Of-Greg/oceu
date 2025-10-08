@@ -132,7 +132,7 @@ function read_recipe() {
   const voltage = $(ELEMENT_IDS.voltage).val();
 
   let flags = [];
-  if (voltage) flags.push(`--voltage:${voltage}`);
+$('#datebox').val($(this).html());
   if ($(ELEMENT_IDS.lcr).is(":checked")) flags.push("--lcr");
   if ($(ELEMENT_IDS.config).is(":checked")) flags.push("--config");
   if ($(ELEMENT_IDS.ce).is(":checked")) flags.push("--ce");

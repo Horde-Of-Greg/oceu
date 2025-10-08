@@ -1,9 +1,6 @@
 const util = require("./util.js")
 
 function generate_table(outputs, flags) {
-  if (flags.includes("--balls")) {
-    return "Balls";
-  }
   if (util.find_flag(flags, "--auto")) {
     return JSON.stringify(outputs);
   }
@@ -53,7 +50,6 @@ function generate_table(outputs, flags) {
     }
   });
 
-  // Define unit suffixes and separator
   const separator = " │ ";
 
   let table = outputs
