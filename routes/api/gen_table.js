@@ -100,7 +100,7 @@ function generate_table(outputs, flags) {
   } else if (rates_flag) {
     header += generate_entry("Rates", "", separator, rates_length);
   }
-  header += generate_entry("Tier", "", "", tier_length);
+  header += generate_entry("Voltage", "", "", tier_length);
   header += "\n";
 
   header += "─".repeat(eu_length + 1);
